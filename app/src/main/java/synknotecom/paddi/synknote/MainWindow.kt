@@ -92,7 +92,7 @@ class MainWindow : AppCompatActivity() {
 
         // Title
         var textView = TextView(this)
-        setMargins(textView, 75, 25, 25, 25)
+        setMargins(textView, 75, 45, 45, 45)
         textView.text = name
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
         textView.setTextColor(Color.BLACK)
@@ -101,7 +101,7 @@ class MainWindow : AppCompatActivity() {
         // Separator Line
         var separatorLine = View(this)
         separatorLine.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5)
-        separatorLine.setBackgroundColor(Color.parseColor("#B3B3B3"))
+        separatorLine.setBackgroundColor(Color.parseColor("#D3D3D3"))
         linearLayout.addView(separatorLine)
     }
 
