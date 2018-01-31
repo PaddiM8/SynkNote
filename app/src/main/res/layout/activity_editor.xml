@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="synknotecom.paddi.synknote.Editor">
+
+    <TabHost
+        android:id="@+id/editorTabs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/markdownView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="56dp"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/markdownEditor"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent"
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="15dp"
+                        android:textIsSelectable="true"
+                        tools:ignore="LabelFor" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/documentView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="56dp"
+                    android:gravity="start"
+                    android:orientation="vertical">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@android:color/darker_gray"
+                        android:visibility="invisible">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <ImageButton
+                                android:id="@+id/boldButton"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="1"
+                                android:background="@color/colorAccent"
+                                android:contentDescription="@string/bold"
+                                app:srcCompat="@android:drawable/checkbox_off_background"
+                                tools:ignore="InefficientWeight" />
+
+                            <ImageButton
+                                android:id="@+id/italicButton"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="1"
+                                android:background="@color/colorAccent"
+                                android:contentDescription="@string/bold"
+                                app:srcCompat="@android:drawable/checkbox_off_background"
+                                tools:ignore="InefficientWeight" />
+
+                            <ImageButton
+                                android:id="@+id/underlineButton"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="1"
+                                android:background="@color/colorAccent"
+                                android:contentDescription="@string/bold"
+                                app:srcCompat="@android:drawable/checkbox_off_background"
+                                tools:ignore="InefficientWeight" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                    <EditText
+                        android:id="@+id/textEditor"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="top"
+                        android:background="@android:color/transparent"
+                        android:editable="false"
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:paddingBottom="15dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:textIsSelectable="true"
+                        tools:ignore="LabelFor" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+        </RelativeLayout>
+    </TabHost>
+
+</RelativeLayout>
