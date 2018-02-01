@@ -116,6 +116,7 @@
                         android:background="@android:color/transparent"
                         android:editable="false"
                         android:gravity="top"
+                        android:textColor="#000000"
                         android:inputType="textMultiLine"
                         android:paddingBottom="15dp"
                         android:paddingLeft="15dp"
