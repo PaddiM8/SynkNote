@@ -1,13 +1,15 @@
 package synknotecom.paddi.synknote
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.view.View
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 /**
- * Created by paddi on 1/30/18.
- */
+* Created by PaddiM8 on 1/30/18.
+*/
 
 fun getFileExtensionFromType(type: String) : String {
     return if (type == "Markdown Document")

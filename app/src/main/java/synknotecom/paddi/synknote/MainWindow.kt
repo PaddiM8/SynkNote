@@ -1,8 +1,8 @@
 package synknotecom.paddi.synknote
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -20,9 +20,13 @@ import java.util.*
 
 class MainWindow : AppCompatActivity() {
 
-    private var itemList = arrayListOf<Document>()
-    private lateinit var adapter: Adapter
+    //private lateinit var adapter: Adapter
     private lateinit var linearLayoutManager: LinearLayoutManager
+
+    object FileList {
+        var files = arrayListOf<File>()
+        lateinit var adapter: Adapter
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,27 +37,18 @@ class MainWindow : AppCompatActivity() {
         setSupportActionBar(toolbar)
         fab.setImageResource(R.drawable.ic_add)
 
-        adapter = Adapter(itemList)
-        recyclerView.adapter = adapter
+        loadDocuments()
 
-        loadFiles()
-
-        val dialog = AlertDialog.Builder(this)
-        val dialogView = layoutInflater.inflate(R.layout.new_document_dialog, null)
-        dialogView.findViewById<EditText>(R.id.document_name_input)
-        dialog.setView(dialogView)
-        dialog.setCancelable(true)
-        dialog.setPositiveButton("Create", { _: DialogInterface, i: Int -> })
-        dialog.setNegativeButton("Cancel", { _: DialogInterface, i: Int -> })
-
-        val customDialog = dialog.create()
+        val customDialog = createNewDocumentDialog()
 
         fab.setOnClickListener {
             customDialog.show()
             toggleKeyboard()
 
             customDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
-                createDocument(customDialog.document_name_input.text.toString(), customDialog.spinner.selectedItem.toString())
+                createDocument(customDialog.document_name_input.text.toString(),
+                               customDialog.spinner.selectedItem.toString(),
+                               window.decorView)
                 customDialog.document_name_input.text.clear()
                 customDialog.dismiss()
             })
@@ -64,13 +59,13 @@ class MainWindow : AppCompatActivity() {
         }
 
         documentsListView.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
-            openDocument(i)
+            openDocument(i, window.decorView)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        loadFiles()
+        loadFileList()
     }
 
     private fun toggleKeyboard() {
@@ -78,59 +73,39 @@ class MainWindow : AppCompatActivity() {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
-    private fun createDocument(name: String, type: String) {
-        val fileName = name + getFileExtensionFromType(type)
-        itemList.add(Document(name, "02/02", fileName))
-        adapter.notifyDataSetChanged()
+    @SuppressLint("InflateParams")
+    private fun createNewDocumentDialog() : AlertDialog {
+        val dialog = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.new_document_dialog, null)
+        dialogView.findViewById<EditText>(R.id.document_name_input)
+        dialog.setView(dialogView)
+        dialog.setCancelable(true)
+        dialog.setPositiveButton("Create", { _: DialogInterface, i: Int -> })
+        dialog.setNegativeButton("Cancel", { _: DialogInterface, i: Int -> })
 
-        val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
-        fos.write("".toByteArray()) // Create empty file
-        fos.close()
-
-        //updateList()
-        openDocument(itemList.count() - 1)
+        return dialog.create()
     }
 
     private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
-        var params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,  RelativeLayout.LayoutParams.WRAP_CONTENT)
+        val params = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,  RelativeLayout.LayoutParams.WRAP_CONTENT)
         params.setMargins(left, top, right, bottom)
         view.layoutParams = params
     }
 
-    private fun loadFiles() {
-        var directory = File(applicationInfo.dataDir + "/files/") // Directory from application root
+    private fun loadFileList() {
+        val directory = File(applicationInfo.dataDir + "/files/") // Directory from application root
 
         if (directory.exists()) {
-            var files = directory.listFiles()
-            itemList.clear()
-
+            val files = directory.listFiles()
             Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-
-            for (file in files) {
-                itemList.add(Document(file.nameWithoutExtension, getDate(file.lastModified(), "dd/MM"), file.name))
-                adapter.notifyDataSetChanged()
-            }
+            FileList.files = ArrayList(files.toList())
         }
     }
 
-    private fun openDocument(id: Int) {
-        var directory = File(applicationInfo.dataDir + "/files/") // Directory from application root
-        val documentFile = directory.listFiles()[id]
-        var intent = Intent(this, Editor::class.java)
-
-        if (documentFile.extension == "txt")
-            intent = Intent(this, NormalEditor::class.java)
-
-        intent.putExtra("title", documentFile.nameWithoutExtension)
-        intent.putExtra("content", documentFile.readText())
-        intent.putExtra("filename", documentFile.name)
-        startActivity(intent)
-    }
-
-    private fun updateList() {
-        //documentsListView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itemList)
-        //adapter = Adapter(itemList)
-        //recyclerView.adapter = adapter
+    private fun loadDocuments() {
+        loadFileList()
+        FileList.adapter = Adapter(FileList.files)
+        recyclerView.adapter = FileList.adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

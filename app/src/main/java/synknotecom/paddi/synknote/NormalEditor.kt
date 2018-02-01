@@ -17,7 +17,7 @@ class NormalEditor : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_normal_editor)
 
-        var actionBar = supportActionBar
+        val actionBar = supportActionBar
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true)
 
@@ -34,14 +34,22 @@ class NormalEditor : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
         super.onOptionsItemSelected(item)
 
-        var id = item.itemId
-        if (id == android.R.id.home) {
-            val intent = Intent(this, MainWindow::class.java)
-            showSoftwareKeyboard(false)
-            startActivity(intent)
-        }
+        val id = item.itemId
+        if (id == android.R.id.home)
+            onBack()
 
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        onBack()
+    }
+
+    private fun onBack() {
+        val intent = Intent(this, MainWindow::class.java)
+        showSoftwareKeyboard(false)
+        startActivity(intent)
     }
 
     override fun onPause() {

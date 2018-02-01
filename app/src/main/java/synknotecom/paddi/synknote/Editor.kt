@@ -24,9 +24,9 @@ class Editor : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
-        var actionBar = supportActionBar
+        val actionBar = supportActionBar
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true)
 
@@ -70,15 +70,21 @@ class Editor : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
         super.onOptionsItemSelected(item)
-
-        var id = item.itemId
-        if (id == android.R.id.home) {
-            val intent = Intent(this, MainWindow::class.java)
-            showSoftwareKeyboard(false)
-            startActivity(intent)
-        }
+        if (item.itemId == android.R.id.home)
+            onBack()
 
         return true
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        onBack()
+    }
+
+    private fun onBack() {
+        val intent = Intent(this, MainWindow::class.java)
+        showSoftwareKeyboard(false)
+        startActivity(intent)
     }
 
     private fun showSoftwareKeyboard(show: Boolean, view: View = View(this)) {
@@ -95,14 +101,5 @@ class Editor : AppCompatActivity() {
         saveDocument(applicationContext, intent.getStringExtra("filename"), markdownEditor)
         Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }
-
-    /*private fun saveDocument() {
-        val fileName = intent.getStringExtra("filename") //title.toString() + getFileExtensionFromType(documentType)
-        val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
-        fos.write(markdownEditor.text.toString().toByteArray())
-        fos.close()
-
-        Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show();
-    }*/
 
 }
