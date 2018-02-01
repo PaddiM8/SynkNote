@@ -1,37 +1,40 @@
 package synknotecom.paddi.synknote
 
-import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_main_window.*
 import kotlinx.android.synthetic.main.content_main_window.*
 import kotlinx.android.synthetic.main.new_document_dialog.*
-import kotlinx.android.synthetic.main.new_document_dialog.view.*
 import java.io.File
+import java.util.*
 
 class MainWindow : AppCompatActivity() {
 
-    var itemList = arrayListOf<String>()
+    private var itemList = arrayListOf<Document>()
+    private lateinit var adapter: Adapter
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_window)
+        linearLayoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = linearLayoutManager
 
         setSupportActionBar(toolbar)
-        fab.setImageResource(R.drawable.ic_add);
+        fab.setImageResource(R.drawable.ic_add)
+
+        adapter = Adapter(itemList)
+        recyclerView.adapter = adapter
 
         loadFiles()
 
@@ -76,33 +79,16 @@ class MainWindow : AppCompatActivity() {
     }
 
     private fun createDocument(name: String, type: String) {
-        itemList.add(name)
-
         val fileName = name + getFileExtensionFromType(type)
+        itemList.add(Document(name, "02/02", fileName))
+        adapter.notifyDataSetChanged()
+
         val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
         fos.write("".toByteArray()) // Create empty file
         fos.close()
 
-        updateList()
-        addListViewItem(name)
+        //updateList()
         openDocument(itemList.count() - 1)
-    }
-
-    private fun addListViewItem(name: String) {
-
-        // Title
-        var textView = TextView(this)
-        setMargins(textView, 75, 45, 45, 45)
-        textView.text = name
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
-        textView.setTextColor(Color.BLACK)
-        linearLayout.addView(textView)
-
-        // Separator Line
-        var separatorLine = View(this)
-        separatorLine.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 5)
-        separatorLine.setBackgroundColor(Color.parseColor("#D3D3D3"))
-        linearLayout.addView(separatorLine)
     }
 
     private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
@@ -118,13 +104,12 @@ class MainWindow : AppCompatActivity() {
             var files = directory.listFiles()
             itemList.clear()
 
-            for (file in files) {
-                itemList.add(file.nameWithoutExtension)
-                addListViewItem(file.nameWithoutExtension)
-            }
+            Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
 
-            if (files.count() > 0)
-                updateList()
+            for (file in files) {
+                itemList.add(Document(file.nameWithoutExtension, getDate(file.lastModified(), "dd/MM"), file.name))
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 
@@ -143,7 +128,9 @@ class MainWindow : AppCompatActivity() {
     }
 
     private fun updateList() {
-        documentsListView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itemList)
+        //documentsListView.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, itemList)
+        //adapter = Adapter(itemList)
+        //recyclerView.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

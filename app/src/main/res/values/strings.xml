@@ -14,4 +14,8 @@
     <string name="markup">Markup</string>
     <string name="textview">TextView</string>
     <string name="k">______________________________________________</string>
+    <string name="title">Title</string>
+    <string name="ranchi_jharkhand">Ranchi, Jharkhand</string>
+    <string name="belal_khan">Belal Khan</string>
+    <string name="date">00/00</string>
 </resources>
