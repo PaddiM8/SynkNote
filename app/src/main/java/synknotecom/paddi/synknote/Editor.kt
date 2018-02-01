@@ -27,8 +27,10 @@ class Editor : AppCompatActivity() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         val actionBar = supportActionBar
-        if (actionBar != null)
+        if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.elevation = 0f
+        }
 
         title = intent.getStringExtra("title")
         markdownEditor.setText(intent.getStringExtra("content"))
@@ -45,7 +47,7 @@ class Editor : AppCompatActivity() {
             TextView(textEditor.context).text = documentString
         }
 
-        textEditor.setOnFocusChangeListener { view: View, b: Boolean ->
+        textEditor.setOnFocusChangeListener { view: View, _: Boolean ->
             if (textEditor.hasFocus()) {
                 Markwon.setMarkdown(textEditor, markdownEditor.text.toString())
                 showSoftwareKeyboard(false, view)

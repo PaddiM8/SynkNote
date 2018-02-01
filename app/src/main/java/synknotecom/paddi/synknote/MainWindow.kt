@@ -58,7 +58,7 @@ class MainWindow : AppCompatActivity() {
             })
         }
 
-        documentsListView.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
+        documentsListView.setOnItemClickListener { _: AdapterView<*>, _: View, i: Int, _: Long ->
             openDocument(i, window.decorView)
         }
     }
@@ -80,8 +80,8 @@ class MainWindow : AppCompatActivity() {
         dialogView.findViewById<EditText>(R.id.document_name_input)
         dialog.setView(dialogView)
         dialog.setCancelable(true)
-        dialog.setPositiveButton("Create", { _: DialogInterface, i: Int -> })
-        dialog.setNegativeButton("Cancel", { _: DialogInterface, i: Int -> })
+        dialog.setPositiveButton("Create", { _: DialogInterface, _: Int -> })
+        dialog.setNegativeButton("Cancel", { _: DialogInterface, _: Int -> })
 
         return dialog.create()
     }

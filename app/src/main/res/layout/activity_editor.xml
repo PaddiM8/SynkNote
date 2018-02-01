@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:theme="@style/TabWidgetTheme">
 
         <RelativeLayout
             android:layout_width="match_parent"
