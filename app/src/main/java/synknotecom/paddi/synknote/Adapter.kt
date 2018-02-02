@@ -32,11 +32,16 @@ class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adap
         return fileList.size
     }
 
+    fun removeItem(position: Int) {
+        fileList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(user: File) {
-            itemView.textViewUsername.text = user.nameWithoutExtension
-            itemView.textViewAddress.text = getDate(user.lastModified(), "dd/MM")
+            itemView.textViewDocumentTitle.text = user.nameWithoutExtension
+            itemView.textViewDate.text = getDate(user.lastModified(), "dd/MM")
         }
     }
 }

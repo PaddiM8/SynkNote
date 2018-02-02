@@ -42,3 +42,16 @@ fun createDocument(name: String, type: String, view: View) {
     MainWindow.FileList.adapter.notifyDataSetChanged()
     openDocument(MainWindow.FileList.files.count() - 1, view)
 }
+
+fun deleteDocument(id: Int) {
+    val documentFile = MainWindow.FileList.files[id]
+    documentFile.delete()
+    MainWindow.FileList.adapter.removeItem(id)
+}
+
+fun renameDocument(id: Int, newName: String, view: View) {
+    val documentFile = MainWindow.FileList.files[id]
+    val newFile = File(view.context.applicationInfo.dataDir + "/files/" + newName + "." + documentFile.extension)
+    documentFile.renameTo(newFile)
+    MainWindow.FileList.files[id] = newFile
+}
