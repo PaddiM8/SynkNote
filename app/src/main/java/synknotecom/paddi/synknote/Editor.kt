@@ -74,7 +74,6 @@ class Editor : AppCompatActivity() {
         super.onOptionsItemSelected(item)
         if (item.itemId == android.R.id.home)
             onBack()
-
         return true
     }
 

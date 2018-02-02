@@ -22,15 +22,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".Editor" />
+        <activity android:name=".NormalEditor" />
         <activity
-            android:name=".EditorTabbed"
-            android:label="@string/title_activity_editor_tabbed"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".tabbedEditor"
-            android:label="@string/title_activity_tabbed_editor"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NormalEditor"></activity>
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.SettingsTheme"/>
     </application>
 
 </manifest>

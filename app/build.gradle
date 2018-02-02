@@ -35,5 +35,6 @@ dependencies {
     compile 'ru.noties:markwon:1.0.3'
     compile 'ru.noties:markwon-image-loader:1.0.3'
     compile 'ru.noties:markwon-view:1.0.3'
+    compile 'com.android.support:preference-v7:26.1.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
 }

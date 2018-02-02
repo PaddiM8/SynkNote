@@ -22,4 +22,8 @@
         <item name="android:textColorSecondary">#FFFFFF</item>
     </style>
 
+    <style name="AppTheme.SettingsTheme" parent="AppTheme">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
 </resources>

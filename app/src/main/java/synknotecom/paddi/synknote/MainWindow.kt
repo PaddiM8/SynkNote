@@ -3,29 +3,36 @@ package synknotecom.paddi.synknote
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
+import android.content.res.Resources
 import android.graphics.*
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.view.menu.MenuView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_main_window.*
 import kotlinx.android.synthetic.main.content_main_window.*
 import kotlinx.android.synthetic.main.new_document_dialog.*
-import kotlinx.android.synthetic.main.rename_dialog.*
 import java.io.File
 import java.util.*
+import android.util.Log
+import android.view.ViewGroup
+import kotlinx.android.synthetic.main.rename_dialog.*
 
+@Suppress("JAVA_CLASS_ON_COMPANION")
 class MainWindow : AppCompatActivity() {
 
-    //private lateinit var adapter: Adapter
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     object FileList {
@@ -34,6 +41,9 @@ class MainWindow : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //if (SettingsActivity.Settings.darkTheme)
+        //setTheme(R.style.AppTheme_Dark)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_window)
         linearLayoutManager = LinearLayoutManager(this)
@@ -54,8 +64,8 @@ class MainWindow : AppCompatActivity() {
 
             customDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
                 createDocument(customDialog.document_name_input.text.toString(),
-                               customDialog.spinner.selectedItem.toString(),
-                               window.decorView)
+                        customDialog.spinner.selectedItem.toString(),
+                        window.decorView)
                 customDialog.document_name_input.text.clear()
                 customDialog.dismiss()
             })
@@ -166,6 +176,22 @@ class MainWindow : AppCompatActivity() {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
+    private fun loadFileList() {
+        val directory = File(applicationInfo.dataDir + "/files/") // Directory from application root
+
+        if (directory.exists()) {
+            val files = directory.listFiles()
+            Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
+            FileList.files = ArrayList(files.toList())
+        }
+    }
+
+    private fun loadDocuments() {
+        FileList.adapter = Adapter(FileList.files)
+        recyclerView.adapter = FileList.adapter
+    }
+
+
     @SuppressLint("InflateParams")
     private fun createNewDocumentDialog() : AlertDialog {
         val dialog = AlertDialog.Builder(this)
@@ -191,22 +217,6 @@ class MainWindow : AppCompatActivity() {
         return dialog.create()
     }
 
-    private fun loadFileList() {
-        val directory = File(applicationInfo.dataDir + "/files/") // Directory from application root
-
-        if (directory.exists()) {
-            val files = directory.listFiles()
-            Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-            FileList.files = ArrayList(files.toList())
-        }
-    }
-
-    private fun loadDocuments() {
-        loadFileList()
-        FileList.adapter = Adapter(FileList.files)
-        recyclerView.adapter = FileList.adapter
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main_window, menu)
@@ -217,9 +227,17 @@ class MainWindow : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
+
+        if (item.itemId == R.id.action_settings) {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+
+        return true
+        /*return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
-        }
+        }*/
     }
 }

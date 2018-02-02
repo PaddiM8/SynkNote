@@ -4,4 +4,13 @@
         <item>Normal Document</item>
         <item>Markdown Document</item>
     </string-array>
+    <string-array name="languages">
+        <item>English</item>
+        <item>Esperanto</item>
+        <item>Swedish</item>
+        <item>German</item>
+        <item>French</item>
+        <item>Kokolang</item>
+        <item>Toki pona</item>
+    </string-array>
 </resources>

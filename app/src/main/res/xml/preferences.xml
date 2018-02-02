@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Appearance">
+
+        <CheckBoxPreference
+            android:id="@+id/darkThemeSwitch"
+            android:defaultValue="false"
+            android:key="darkThemeSettingsCheckbox"
+            android:title="Use Dark Theme" />
+        <!--<MultiSelectListPreference
+            android:defaultValue="@array/languages"
+            android:entries="@array/languages"
+            android:entryValues="@array/languages"
+            android:key="languageSelectionList"
+            android:title="Language" />-->
+    </PreferenceCategory>
+    <!--<PreferenceCategory android:title="Security">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="customEncryptionKeySwitch"
+            android:title="Use Custom Encryption Key" />
+        <EditTextPreference
+            android:defaultValue="Default value"
+            android:enabled="false"
+            android:key="customEncryptionKeyEditText"
+            android:password="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Encryption key..." />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="passwordLockSwitch"
+            android:title="Password Lock" />
+        <EditTextPreference
+            android:defaultValue="Default value"
+            android:enabled="false"
+            android:key="passwordLockEditText"
+            android:password="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Password..." />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Local Folder">
+
+        <EditTextPreference
+            android:defaultValue="Default value"
+            android:key="localFolderEditText"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:text="/android/data"
+            android:title="/android/data" />
+    </PreferenceCategory>-->
+
+</PreferenceScreen>
