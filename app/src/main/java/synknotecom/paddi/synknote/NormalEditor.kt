@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +15,10 @@ import kotlinx.android.synthetic.main.activity_normal_editor.*
 class NormalEditor : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("darkThemeSettingsCheckbox", false))
+            setTheme(R.style.AppTheme_Dark_General)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_normal_editor)
 

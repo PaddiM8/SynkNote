@@ -3,4 +3,14 @@
     <color name="colorPrimary">#512DA8</color>
     <color name="colorPrimaryDark">#4527A0</color>
     <color name="colorAccent">#BF360C</color>
+    <color name="colorBackgroundLight">#FFFFFF</color>
+
+    <color name="colorPrimaryInverse">#4527A0</color>
+    <color name="colorPrimaryDarkInverse">#311B92</color>
+    <color name="colorAccentInverse">#BF360C</color>
+    <color name="textColorPrimaryInverse">#FFFFFFFF</color>
+    <color name="textColorSecondaryInverse">#FFFFFFFF</color>
+    <color name="textColorPrimary">#000000</color>
+    <color name="textColorSecondary">#000000</color>
+    <color name="colorBackgroundDark">#000000</color>
 </resources>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.*
 import android.os.Bundle
@@ -41,8 +42,9 @@ class MainWindow : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //if (SettingsActivity.Settings.darkTheme)
-        //setTheme(R.style.AppTheme_Dark)
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("darkThemeSettingsCheckbox", false))
+            setTheme(R.style.AppTheme_Dark)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_window)

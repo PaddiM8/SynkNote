@@ -6,6 +6,24 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="recyclerViewItem">@color/colorBackgroundLight</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="Theme.AppCompat">
+        <item name="colorPrimary">@color/colorPrimaryInverse</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkInverse</item>
+        <item name="colorAccent">@color/colorAccentInverse</item>
+        <item name="android:textColorPrimary">@color/textColorPrimaryInverse</item>
+        <item name="android:textColorSecondary">@color/textColorSecondaryInverse</item>
+        <item name="android:textColorPrimaryInverse">@color/textColorPrimary</item>
+        <item name="android:textColorSecondaryInverse">@color/textColorSecondary</item>
+        <item name="recyclerViewItem">@color/colorBackgroundDark</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Dark.General" parent="AppTheme.Dark">
+        <item name="windowNoTitle">false</item>
+        <item name="tabHostBackground">@color/colorPrimaryInverse</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -24,6 +42,11 @@
 
     <style name="AppTheme.SettingsTheme" parent="AppTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="AppTheme.SettingsTheme.Dark" parent="AppTheme.Dark">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="windowNoTitle">false</item>
     </style>
 
 </resources>

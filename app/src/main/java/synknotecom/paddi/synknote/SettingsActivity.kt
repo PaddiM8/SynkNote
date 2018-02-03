@@ -9,11 +9,11 @@ import android.view.MenuItem
 
 class SettingsActivity : AppCompatActivity() {
 
-    object Settings {
-        var darkTheme = false
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean("darkThemeSettingsCheckbox", false))
+            setTheme(R.style.AppTheme_SettingsTheme_Dark)
+
         super.onCreate(savedInstanceState)
 
         val actionBar = supportActionBar
@@ -25,10 +25,6 @@ class SettingsActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
                 .replace(android.R.id.content, SettingsFragment())
                 .commit()
-        val sharedPref =
-                PreferenceManager.getDefaultSharedPreferences(this)
-
-        Settings.darkTheme = sharedPref.getBoolean("darkThemeCheckbox", false)
     }
 
     private fun applySettings() {

@@ -25,7 +25,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
+                android:background="?attr/tabHostBackground"
                 android:visibility="visible" />
 
             <FrameLayout
@@ -48,7 +48,6 @@
                         android:gravity="top"
                         android:inputType="textMultiLine"
                         android:paddingBottom="15dp"
-                        android:textColor="#000000"                        
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:paddingTop="15dp"
@@ -114,10 +113,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="top"
                         android:background="@android:color/transparent"
-                        android:editable="false"
                         android:gravity="top"
-                        android:textColor="#000000"
-                        android:inputType="textMultiLine"
+                        android:inputType="none"
                         android:paddingBottom="15dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
