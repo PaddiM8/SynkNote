@@ -4,17 +4,17 @@
     <PreferenceCategory android:title="@string/appearance">
 
         <CheckBoxPreference
-            android:id="@+id/darkThemeSwitch"
+            android:id="@+id/dark_theme_switch"
             android:defaultValue="false"
             android:key="darkThemeSettingsCheckbox"
             android:title="@string/use_dark_theme" />
-        <ListPreference
+        <!--<ListPreference
             android:id="@+id/languageList"
             android:defaultValue="@array/languages"
             android:entries="@array/languages"
             android:entryValues="@array/languages"
             android:key="languageSelectionList"
-            android:title="@string/language" />
+            android:title="@string/language" />-->
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/security">
         <SwitchPreference

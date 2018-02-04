@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_main_window">
 
     <ListView
-        android:id="@+id/documentsListView"
+        android:id="@+id/documents_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"

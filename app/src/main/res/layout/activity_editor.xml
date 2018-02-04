@@ -34,14 +34,14 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
-                    android:id="@+id/markdownView"
+                    android:id="@+id/markdown_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="56dp"
                     android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/markdownEditor"
+                        android:id="@+id/markdown_editor"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
@@ -58,58 +58,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/documentView"
+                    android:id="@+id/document_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="56dp"
                     android:gravity="start"
                     android:orientation="vertical">
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="@android:color/darker_gray"
-                        android:visibility="invisible">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
-
-                            <ImageButton
-                                android:id="@+id/boldButton"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_weight="1"
-                                android:background="@color/colorAccent"
-                                android:contentDescription="@string/bold"
-                                app:srcCompat="@android:drawable/checkbox_off_background"
-                                tools:ignore="InefficientWeight" />
-
-                            <ImageButton
-                                android:id="@+id/italicButton"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_weight="1"
-                                android:background="@color/colorAccent"
-                                android:contentDescription="@string/bold"
-                                app:srcCompat="@android:drawable/checkbox_off_background"
-                                tools:ignore="InefficientWeight" />
-
-                            <ImageButton
-                                android:id="@+id/underlineButton"
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:layout_weight="1"
-                                android:background="@color/colorAccent"
-                                android:contentDescription="@string/bold"
-                                app:srcCompat="@android:drawable/checkbox_off_background"
-                                tools:ignore="InefficientWeight" />
-                        </LinearLayout>
-                    </HorizontalScrollView>
-
                     <EditText
-                        android:id="@+id/textEditor"
+                        android:id="@+id/text_editor"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="top"

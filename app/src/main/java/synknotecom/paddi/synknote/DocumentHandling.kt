@@ -15,14 +15,8 @@ import java.io.File
 
 fun saveDocument(context: Context, fileName: String, textEditorComponent: EditText) {
     var documentContent = textEditorComponent.text.toString()
-    val pref = PreferenceManager.getDefaultSharedPreferences(context)
 
-    // If file is encrypted
-    if (pref.getBoolean("passwordLockSwitch", false)) {
-        val textEncryptor = BasicTextEncryptor()
-        textEncryptor.setPassword(MainActivity.Protection.encryptionKey)
-        documentContent = "[-ENCRYPTED-]" + textEncryptor.encrypt(documentContent)
-    }
+    documentContent = encryptString(documentContent)
 
     val fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)
     fos.write(documentContent.toByteArray())
@@ -33,15 +27,8 @@ fun openDocument(id: Int, view: View) {
     val documentFile = MainActivity.FileList.files[id]
     var intent = Intent(view.context, MarkdownEditor::class.java)
     var documentContent = documentFile.readText()
-    val pref = PreferenceManager.getDefaultSharedPreferences(view.context)
 
-    // If file is encrypted
-    if (pref.getBoolean("passwordLockSwitch", false) &&
-            documentContent.startsWith("[-ENCRYPTED-]")) {
-        val textEncryptor = BasicTextEncryptor()
-        textEncryptor.setPassword(MainActivity.Protection.encryptionKey)
-        documentContent = textEncryptor.decrypt(documentContent.substring(13))
-    }
+    documentContent = decryptString(documentContent)
 
     if (documentFile.extension == "txt")
         intent = Intent(view.context, NormalEditor::class.java)
@@ -76,4 +63,24 @@ fun renameDocument(id: Int, newName: String, view: View) {
     val newFile = File(view.context.applicationInfo.dataDir + "/files/" + newName + "." + documentFile.extension)
     documentFile.renameTo(newFile)
     MainActivity.FileList.files[id] = newFile
+}
+
+fun encryptString(input: String): String {
+    return try {
+        val textEncryptor = BasicTextEncryptor()
+        textEncryptor.setPassword(MainActivity.Protection.encryptionKey)
+        textEncryptor.encrypt(input)
+    } catch (e: Exception) {
+        input
+    }
+}
+
+fun decryptString(input: String): String {
+    return try {
+        val textEncryptor = BasicTextEncryptor()
+        textEncryptor.setPassword(MainActivity.Protection.encryptionKey)
+        return textEncryptor.decrypt(input)
+    } catch (e: Exception) {
+        input
+    }
 }

@@ -37,22 +37,16 @@ class MarkdownEditor : AppCompatActivity() {
         }
 
         title = intent.getStringExtra("title")
-        markdownEditor.setText(intent.getStringExtra("content"))
+        markdown_editor.setText(intent.getStringExtra("content"))
 
-        markdownEditor.setOnClickListener {
-            if (markdownEditor.hasFocus())
+        markdown_editor.setOnClickListener {
+            if (markdown_editor.hasFocus())
                 showSoftwareKeyboard(true)
         }
 
-        boldButton.setOnClickListener {
-            val documentString = SpannableStringBuilder(textEditor.text.toString())
-            documentString.setSpan(StyleSpan(Typeface.BOLD), textEditor.selectionStart, textEditor.selectionEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            TextView(textEditor.context).text = documentString
-        }
-
-        textEditor.setOnFocusChangeListener { view: View, _: Boolean ->
-            if (textEditor.hasFocus()) {
-                Markwon.setMarkdown(textEditor, markdownEditor.text.toString())
+        text_editor.setOnFocusChangeListener { view: View, _: Boolean ->
+            if (text_editor.hasFocus()) {
+                Markwon.setMarkdown(text_editor, markdown_editor.text.toString())
                 showSoftwareKeyboard(false, view)
             }
         }
@@ -61,13 +55,13 @@ class MarkdownEditor : AppCompatActivity() {
 
         // Tab 1
         val spec = editorTabs.newTabSpec("Markdown")
-        spec.setContent(markdownView.id)
+        spec.setContent(markdown_view.id)
         spec.setIndicator("Markdown")
         editorTabs.addTab(spec)
 
         // Tab 2
         val spec2 = editorTabs.newTabSpec("Preview")
-        spec2.setContent(documentView.id)
+        spec2.setContent(document_view.id)
         spec2.setIndicator("Preview")
         editorTabs.addTab(spec2)
 
@@ -96,14 +90,14 @@ class MarkdownEditor : AppCompatActivity() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (show)
-            imm.showSoftInput(markdownEditor, 0)
+            imm.showSoftInput(markdown_editor, 0)
         else
             imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onPause() {
         super.onPause()
-        saveDocument(applicationContext, intent.getStringExtra("filename"), markdownEditor)
+        saveDocument(applicationContext, intent.getStringExtra("filename"), markdown_editor)
         Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }
 

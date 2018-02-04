@@ -1,13 +1,10 @@
 package synknotecom.paddi.synknote
 
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
-import synknotecom.paddi.synknote.R.id.recyclerView
 import java.io.File
 
 
@@ -40,8 +37,8 @@ class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adap
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(user: File) {
-            itemView.textViewDocumentTitle.text = user.nameWithoutExtension
-            itemView.textViewDate.text = getDate(user.lastModified(), "dd/MM")
+            itemView.text_view_document_title.text = user.nameWithoutExtension
+            itemView.text_view_date.text = getDate(user.lastModified(), "dd/MM")
         }
     }
 }

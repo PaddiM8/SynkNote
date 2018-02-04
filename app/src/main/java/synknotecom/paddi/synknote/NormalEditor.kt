@@ -24,10 +24,10 @@ class NormalEditor : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         title = intent.getStringExtra("title")
-        normalTextEditor.setText(intent.getStringExtra("content"))
+        normal_text_editor.setText(intent.getStringExtra("content"))
 
-        normalTextEditor.setOnClickListener {
-            if (normalTextEditor.hasFocus())
+        normal_text_editor.setOnClickListener {
+            if (normal_text_editor.hasFocus())
                 showSoftwareKeyboard(true)
         }
     }
@@ -56,7 +56,7 @@ class NormalEditor : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        saveDocument(applicationContext, intent.getStringExtra("filename"), normalTextEditor)
+        saveDocument(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
         Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }
 
@@ -64,7 +64,7 @@ class NormalEditor : AppCompatActivity() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         if (show)
-            imm.showSoftInput(normalTextEditor, 0)
+            imm.showSoftInput(normal_text_editor, 0)
         else
             imm.hideSoftInputFromWindow(view.windowToken, 0)
     }

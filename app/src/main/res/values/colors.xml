@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#4527A0</color>
     <color name="colorAccent">#BF360C</color>
     <color name="colorBackgroundLight">#FFFFFF</color>
-    <color name="separatorLineColorLight">#000000</color>
+    <color name="separatorLineColorLight">#D3D3D3</color>
 
     <color name="colorPrimaryInverse">#4527A0</color>
     <color name="colorPrimaryDarkInverse">#311B92</color>
