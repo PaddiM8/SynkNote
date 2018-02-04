@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SynkNote</string>
+    <string name="action_settings" translatable="false">Inställningar</string>
+    <string name="document_name" translatable="false">Dokument Namn</string>
+    <string name="document">Dokument</string>
+    <string name="title">Titel</string>
+    <string name="delete">Ta bort</string>
+    <string name="title_activity_settings">Inställningar</string>
+    <string name="pref_header_general" translatable="false">Allmänt</string>
+    <string name="local_folder">Lokal Mapp</string>
+    <string name="password">Lösenord…</string>
+    <string name="encryption_key">Krypteingsnyckel…</string>
+    <string name="use_custom_encryption_key">Använd egen krypteringsnyckel…</string>
+    <string name="security">Säkerhet</string>
+    <string name="appearance">Utseende</string>
+    <string name="language">Språk</string>
+    <string name="use_dark_theme">Använd Mörkt Tema</string>
+    <string name="password_lock">Lösenordsskyddat</string>
+</resources>

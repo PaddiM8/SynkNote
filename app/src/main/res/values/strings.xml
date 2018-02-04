@@ -1,23 +1,19 @@
 <resources>
     <string name="app_name">SynkNote</string>
     <string name="action_settings">Settings</string>
-    <string name="synknote">SynkNote</string>
+    <string name="synknote" translatable="false">SynkNote</string>
     <string name="document_name">Document Name</string>
-    <string name="bold"><![CDATA[Bold>]]></string>
-    <string name="title_activity_editor_tabbed">EditorTabbed</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_tabbed_editor">tabbedEditor</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
+    <string name="bold" translatable="false"><![CDATA[Bold>]]></string>
+    <string name="title_activity_editor_tabbed" translatable="false">EditorTabbed</string>
+    <string name="section_format" translatable="false">Hello World from section: %1$d</string>
+    <string name="title_activity_tabbed_editor" translatable="false">tabbedEditor</string>
+    <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="tab_text_2" translatable="false">Tab 2</string>
+    <string name="tab_text_3" translatable="false">Tab 3</string>
     <string name="document">Document</string>
-    <string name="markup">Markup</string>
-    <string name="textview">TextView</string>
-    <string name="k">______________________________________________</string>
+    <string name="markup" translatable="false">Markup</string>
     <string name="title">Title</string>
-    <string name="ranchi_jharkhand">Ranchi, Jharkhand</string>
-    <string name="belal_khan">Belal Khan</string>
-    <string name="date">00/00</string>
+    <string name="date" translatable="false">00/00</string>
     <string name="delete">delete</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -26,15 +22,15 @@
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
+    <string name="pref_title_social_recommendations" translatable="false">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations" translatable="false">Recommendations for people to contact
         based on your message history
     </string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_display_name" translatable="false">Display name</string>
+    <string name="pref_default_display_name" translatable="false">John Smith</string>
 
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string name="pref_title_add_friends_to_messages" translatable="false">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>
         <item>When possible</item>
@@ -47,9 +43,9 @@
     </string-array>
 
     <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_header_data_sync" translatable="false">Data &amp; sync</string>
 
-    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_title_sync_frequency" translatable="false">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>
@@ -81,18 +77,27 @@
 
     <string-array name="multi_select_list_preference_default_value" />
 
-    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_title_system_sync_settings" translatable="false">System sync settings</string>
 
     <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_header_notifications" translatable="false">Notifications</string>
 
-    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_new_message_notifications" translatable="false">New message notifications</string>
 
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_ringtone" translatable="false">Ringtone</string>
+    <string name="pref_ringtone_silent" translatable="false">Silent</string>
 
-    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="pref_title_vibrate" translatable="false">Vibrate</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="password_lock">Password Lock</string>
+    <string name="use_dark_theme">Use Dark Theme</string>
+    <string name="language">Language</string>
+    <string name="appearance">Appearance</string>
+    <string name="security">Security</string>
+    <string name="use_custom_encryption_key">Use Custom Encryption Key</string>
+    <string name="encryption_key">Encryption key…</string>
+    <string name="password">Password…</string>
+    <string name="local_folder">Local Folder</string>
 </resources>

@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Appearance">
+    <PreferenceCategory android:title="@string/appearance">
 
         <CheckBoxPreference
             android:id="@+id/darkThemeSwitch"
             android:defaultValue="false"
             android:key="darkThemeSettingsCheckbox"
-            android:title="Use Dark Theme" />
-        <!--<MultiSelectListPreference
+            android:title="@string/use_dark_theme" />
+        <ListPreference
+            android:id="@+id/languageList"
             android:defaultValue="@array/languages"
             android:entries="@array/languages"
             android:entryValues="@array/languages"
             android:key="languageSelectionList"
-            android:title="Language" />-->
+            android:title="@string/language" />
     </PreferenceCategory>
-    <!--<PreferenceCategory android:title="Security">
-
+    <PreferenceCategory android:title="@string/security">
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="customEncryptionKeySwitch"
-            android:title="Use Custom Encryption Key" />
-        <EditTextPreference
-            android:defaultValue="Default value"
-            android:enabled="false"
-            android:key="customEncryptionKeyEditText"
-            android:password="true"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="Encryption key..." />
-        <SwitchPreference
+            android:id="@+id/password_lock_switch"
             android:defaultValue="false"
             android:key="passwordLockSwitch"
-            android:title="Password Lock" />
+            android:title="@string/password_lock" />
         <EditTextPreference
-            android:defaultValue="Default value"
-            android:enabled="false"
+            android:id="@+id/password_input_settings"
+            android:defaultValue="password"
             android:key="passwordLockEditText"
             android:password="true"
+            android:dependency="passwordLockSwitch"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="Password..." />
+            android:title="@string/password" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="Local Folder">
+    <PreferenceCategory android:title="@string/local_folder">
 
         <EditTextPreference
             android:defaultValue="Default value"
@@ -51,6 +41,6 @@
             android:singleLine="true"
             android:text="/android/data"
             android:title="/android/data" />
-    </PreferenceCategory>-->
+    </PreferenceCategory>
 
 </PreferenceScreen>

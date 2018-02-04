@@ -2,4 +2,6 @@
 <resources>
     <attr name="recyclerViewItem" format="reference" />
     <attr name="tabHostBackground" format="reference" />
+    <attr name="textColorEditor" format="reference" />
+    <attr name="separatorLineColor" format="reference" />
 </resources>

@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="recyclerViewItem">@color/colorBackgroundLight</item>
+        <item name="separatorLineColor">@color/separatorLineColorLight</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
@@ -17,13 +18,22 @@
         <item name="android:textColorSecondary">@color/textColorSecondaryInverse</item>
         <item name="android:textColorPrimaryInverse">@color/textColorPrimary</item>
         <item name="android:textColorSecondaryInverse">@color/textColorSecondary</item>
-        <item name="recyclerViewItem">@color/colorBackgroundDark</item>
+        <item name="recyclerViewItem">@color/listItemColorDark</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:colorForeground">@color/colorBackgroundDark</item>
+        <item name="separatorLineColor">@color/separatorLineColorDark</item>
+    </style>
+
+    <style name="AppTheme.General" parent="AppTheme">
+        <item name="windowNoTitle">false</item>
+        <item name="tabHostBackground">@color/colorPrimary</item>
+        <item name="textColorEditor">@color/textColorEditorLight</item>
     </style>
 
     <style name="AppTheme.Dark.General" parent="AppTheme.Dark">
         <item name="windowNoTitle">false</item>
         <item name="tabHostBackground">@color/colorPrimaryInverse</item>
+        <item name="textColorEditor">@color/textColorEditorDark</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -35,7 +45,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="TabWidgetTheme" parent="AppTheme">
+    <style name="TabWidgetTheme" parent="AppTheme.Dark">
         <item name="android:textColorPrimary">#FFFFFF</item>
         <item name="android:textColorSecondary">#FFFFFF</item>
     </style>

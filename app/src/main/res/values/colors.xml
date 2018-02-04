@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#4527A0</color>
     <color name="colorAccent">#BF360C</color>
     <color name="colorBackgroundLight">#FFFFFF</color>
+    <color name="separatorLineColorLight">#000000</color>
 
     <color name="colorPrimaryInverse">#4527A0</color>
     <color name="colorPrimaryDarkInverse">#311B92</color>
@@ -13,4 +14,8 @@
     <color name="textColorPrimary">#000000</color>
     <color name="textColorSecondary">#000000</color>
     <color name="colorBackgroundDark">#000000</color>
+    <color name="textColorEditorLight">#000000</color>
+    <color name="textColorEditorDark">#FFFFFF</color>
+    <color name="listItemColorDark">#303030</color>
+    <color name="separatorLineColorDark">#757575</color>
 </resources>

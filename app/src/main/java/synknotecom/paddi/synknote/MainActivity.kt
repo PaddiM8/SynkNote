@@ -4,19 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.Resources
 import android.graphics.*
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.view.menu.MenuView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.support.v7.widget.helper.ItemTouchHelper.SimpleCallback
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,12 +23,15 @@ import kotlinx.android.synthetic.main.content_main_window.*
 import kotlinx.android.synthetic.main.new_document_dialog.*
 import java.io.File
 import java.util.*
-import android.util.Log
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.activity_editor.*
+import kotlinx.android.synthetic.main.password_dialog.*
 import kotlinx.android.synthetic.main.rename_dialog.*
+import javax.crypto.Cipher
+import javax.crypto.SecretKeyFactory
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
-class MainWindow : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var linearLayoutManager: LinearLayoutManager
 
@@ -41,9 +40,17 @@ class MainWindow : AppCompatActivity() {
         lateinit var adapter: Adapter
     }
 
+    object Protection {
+        var askForPassword = true
+        var encryptionKey = ""
+        val salt = "salt" // TODO: Fix salt
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("darkThemeSettingsCheckbox", false))
+        val defaultPref = PreferenceManager.getDefaultSharedPreferences(this)
+        val pref = applicationContext.getSharedPreferences("DataPref", MODE_PRIVATE)
+
+        if (defaultPref.getBoolean("darkThemeSettingsCheckbox", false))
             setTheme(R.style.AppTheme_Dark)
 
         super.onCreate(savedInstanceState)
@@ -51,29 +58,54 @@ class MainWindow : AppCompatActivity() {
         linearLayoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = linearLayoutManager
 
+        val passwordLockSettingEnabled = defaultPref.getBoolean("passwordLockSwitch", false)
+
+        if (passwordLockSettingEnabled && Protection.askForPassword && pref.getString("password_hash", null) != null) {
+            val passwordDialog = createPasswordDialog()
+            passwordDialog.show()
+            Protection.askForPassword = false
+            toggleKeyboard()
+
+            passwordDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val dialogInput = passwordDialog.password_input.text.toString()
+                if (BCrypt.checkpw(dialogInput, pref.getString("password_hash", null))) {
+                    passwordDialog.password_input.setText("")
+                    passwordDialog.dismiss()
+                    loadFileList()
+                    loadDocuments()
+                    toggleKeyboard()
+
+                    Protection.encryptionKey = PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray())
+                }
+            }
+
+        } else {
+            loadFileList()
+            loadDocuments()
+        }
+
         setSupportActionBar(toolbar)
         fab.setImageResource(R.drawable.ic_add)
 
-        loadFileList()
-        loadDocuments()
         initSwipe()
 
-        val customDialog = createNewDocumentDialog()
+        val newDocumentDialog = createNewDocumentDialog()
 
         fab.setOnClickListener {
-            customDialog.show()
+            newDocumentDialog.show()
             toggleKeyboard()
 
-            customDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
-                createDocument(customDialog.document_name_input.text.toString(),
-                        customDialog.spinner.selectedItem.toString(),
+            newDocumentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
+                createDocument(newDocumentDialog.document_name_input.text.toString(),
+                        newDocumentDialog.spinner.selectedItem.toString(),
                         window.decorView)
-                customDialog.document_name_input.text.clear()
-                customDialog.dismiss()
+                newDocumentDialog.document_name_input.text.clear()
+                newDocumentDialog.dismiss()
             })
 
-            customDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener({
-                customDialog.dismiss()
+            newDocumentDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener({
+                newDocumentDialog.dismiss()
+                toggleKeyboard()
             })
         }
 
@@ -97,6 +129,8 @@ class MainWindow : AppCompatActivity() {
                     deleteDocument(itemId)
                 } else {
                     renameDialog.show()
+                    toggleKeyboard()
+
                     val view = viewHolder.itemView
                     if (view.parent != null)
                         (view.parent as ViewGroup).removeView(view)
@@ -106,10 +140,12 @@ class MainWindow : AppCompatActivity() {
                         loadDocuments() // TODO: Uh, make more efficient
                         renameDialog.rename_document_input.text.clear()
                         renameDialog.dismiss()
+                        toggleKeyboard()
                     })
 
                     renameDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener({
                         renameDialog.dismiss()
+                        toggleKeyboard()
                     })
                 }
             }
@@ -123,10 +159,10 @@ class MainWindow : AppCompatActivity() {
                     val height = itemView.bottom.toFloat() - itemView.top.toFloat()
                     val width = height / 3
                     var paint = Paint()
-                    val itemViewTop : Float = itemView.top.toFloat()
-                    val itemViewLeft : Float = itemView.left.toFloat()
+                    val itemViewTop    : Float = itemView.top.toFloat()
+                    val itemViewLeft   : Float = itemView.left.toFloat()
                     val itemViewBottom : Float = itemView.bottom.toFloat()
-                    val itemViewRight : Float = itemView.right.toFloat()
+                    val itemViewRight  : Float = itemView.right.toFloat()
 
                     if (dX > 0) {
                         paint.color = Color.parseColor("#388E3C")
@@ -154,16 +190,16 @@ class MainWindow : AppCompatActivity() {
     private fun createIconRectangle(direction: String, itemView: View, width: Float) : RectF {
         return if (direction == "left")
             RectF(
-                    itemView.left.toFloat() + width,
-                    itemView.top.toFloat() + width,
-                    itemView.left.toFloat() + 2 * width,
+                       itemView.left.toFloat() + width,
+                       itemView.top.toFloat() + width,
+                      itemView.left.toFloat() + 2 * width,
                     itemView.bottom.toFloat() - width
             )
         else
             RectF(
-                    itemView.right.toFloat() + width,
-                    itemView.top.toFloat() + width,
-                    itemView.right.toFloat() + 2 * width,
+                       itemView.right.toFloat() + width,
+                       itemView.top.toFloat() + width,
+                      itemView.right.toFloat() + 2 * width,
                     itemView.bottom.toFloat() - width
             )
     }
@@ -173,9 +209,23 @@ class MainWindow : AppCompatActivity() {
         loadFileList()
     }
 
+    override fun onPause() {
+        super.onPause()
+        Protection.askForPassword = true
+    }
+
     private fun toggleKeyboard() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+    }
+
+    private fun showSoftwareKeyboard(show: Boolean, view: View = View(this)) {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        if (show)
+            imm.showSoftInput(markdownEditor, 0)
+        else
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun loadFileList() {
@@ -219,6 +269,17 @@ class MainWindow : AppCompatActivity() {
         return dialog.create()
     }
 
+    private fun createPasswordDialog() : AlertDialog {
+        val dialog = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.password_dialog, null)
+        dialogView.findViewById<EditText>(R.id.password_input)
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+        dialog.setPositiveButton("Enter", { _: DialogInterface, _: Int -> })
+
+        return dialog.create()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main_window, menu)
@@ -231,15 +292,12 @@ class MainWindow : AppCompatActivity() {
         // as you specify a parent activity in AndroidManifest.xml.
 
         if (item.itemId == R.id.action_settings) {
+            Protection.askForPassword = false
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
             return true
         }
 
         return true
-        /*return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }*/
     }
 }

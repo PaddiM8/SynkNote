@@ -9,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_editor.*
 import kotlinx.android.synthetic.main.activity_normal_editor.*
 
 class NormalEditor : AppCompatActivity() {
@@ -22,13 +21,10 @@ class NormalEditor : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_normal_editor)
 
-        val actionBar = supportActionBar
-        if (actionBar != null)
-            actionBar.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         title = intent.getStringExtra("title")
         normalTextEditor.setText(intent.getStringExtra("content"))
-
 
         normalTextEditor.setOnClickListener {
             if (normalTextEditor.hasFocus())
@@ -52,9 +48,10 @@ class NormalEditor : AppCompatActivity() {
     }
 
     private fun onBack() {
-        val intent = Intent(this, MainWindow::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         showSoftwareKeyboard(false)
         startActivity(intent)
+        MainActivity.Protection.askForPassword = false
     }
 
     override fun onPause() {

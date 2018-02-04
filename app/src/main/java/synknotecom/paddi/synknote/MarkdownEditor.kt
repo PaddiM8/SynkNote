@@ -1,6 +1,5 @@
 package synknotecom.paddi.synknote
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
@@ -18,13 +17,14 @@ import android.widget.TextView
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_editor.*
 import ru.noties.markwon.Markwon
-import java.io.File
 
-class Editor : AppCompatActivity() {
+class MarkdownEditor : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("darkThemeSettingsCheckbox", false))
             setTheme(R.style.AppTheme_Dark_General)
+        else
+            setTheme(R.style.AppTheme_General)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)
@@ -38,7 +38,6 @@ class Editor : AppCompatActivity() {
 
         title = intent.getStringExtra("title")
         markdownEditor.setText(intent.getStringExtra("content"))
-
 
         markdownEditor.setOnClickListener {
             if (markdownEditor.hasFocus())
@@ -87,9 +86,10 @@ class Editor : AppCompatActivity() {
     }
 
     private fun onBack() {
-        val intent = Intent(this, MainWindow::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         showSoftwareKeyboard(false)
         startActivity(intent)
+        MainActivity.Protection.askForPassword = false
     }
 
     private fun showSoftwareKeyboard(show: Boolean, view: View = View(this)) {

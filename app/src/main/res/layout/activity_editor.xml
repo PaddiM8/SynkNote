@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="synknotecom.paddi.synknote.Editor">
+    tools:context="synknotecom.paddi.synknote.MarkdownEditor">
 
     <TabHost
         android:id="@+id/editorTabs"
@@ -45,6 +45,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
+                        android:textColor="?attr/textColorEditor"
                         android:gravity="top"
                         android:inputType="textMultiLine"
                         android:paddingBottom="15dp"
@@ -119,6 +120,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:textIsSelectable="true"
+                        android:textColor="?attr/textColorEditor"
                         tools:ignore="LabelFor" />
 
                 </LinearLayout>
