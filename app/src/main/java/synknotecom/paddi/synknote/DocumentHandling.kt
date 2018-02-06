@@ -3,6 +3,7 @@ package synknotecom.paddi.synknote
 import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import org.jasypt.util.text.BasicTextEncryptor
@@ -16,7 +17,7 @@ import java.io.File
 fun saveDocument(context: Context, fileName: String, textEditorComponent: EditText) {
     var documentContent = textEditorComponent.text.toString()
 
-    documentContent = encryptString(documentContent)
+    documentContent = encryptString(documentContent, MainActivity.Protection.encryptionKey)
 
     val fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)
     fos.write(documentContent.toByteArray())
@@ -28,7 +29,7 @@ fun openDocument(id: Int, view: View) {
     var intent = Intent(view.context, MarkdownEditor::class.java)
     var documentContent = documentFile.readText()
 
-    documentContent = decryptString(documentContent)
+    documentContent = decryptString(documentContent, MainActivity.Protection.encryptionKey)
 
     if (documentFile.extension == "txt")
         intent = Intent(view.context, NormalEditor::class.java)
@@ -65,20 +66,20 @@ fun renameDocument(id: Int, newName: String, view: View) {
     MainActivity.FileList.files[id] = newFile
 }
 
-fun encryptString(input: String): String {
+fun encryptString(input: String, key: String): String {
     return try {
         val textEncryptor = BasicTextEncryptor()
-        textEncryptor.setPassword(MainActivity.Protection.encryptionKey)
+        textEncryptor.setPassword(key)
         textEncryptor.encrypt(input)
     } catch (e: Exception) {
         input
     }
 }
 
-fun decryptString(input: String): String {
+fun decryptString(input: String, key: String): String {
     return try {
         val textEncryptor = BasicTextEncryptor()
-        textEncryptor.setPassword(MainActivity.Protection.encryptionKey)
+        textEncryptor.setPassword(key)
         return textEncryptor.decrypt(input)
     } catch (e: Exception) {
         input

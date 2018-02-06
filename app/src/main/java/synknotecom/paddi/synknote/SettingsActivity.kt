@@ -6,7 +6,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
+import java.io.File
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -31,20 +33,42 @@ class SettingsActivity : AppCompatActivity() {
             when (tag) {
                 "darkThemeSettingsCheckbox" -> this.recreate()
                 "passwordLockEditText" -> {
-                    val defaultPref = PreferenceManager.getDefaultSharedPreferences(this)
+                    val defaultPref = getDefaultPref(this)!!
                     val specifiedPassword = defaultPref.getString("passwordLockEditText", "")
 
-                    if (specifiedPassword != "") {
-                        val hashedPassword = BCrypt.hashpw(specifiedPassword, BCrypt.gensalt())
+                    if (defaultPref.getBoolean("passwordLockSwitch", false) && specifiedPassword != "") {
+                        val hashedPassword = PBKDF2Algo.generateHash(specifiedPassword, MainActivity.Protection.salt.toByteArray())
                         val pref = applicationContext.getSharedPreferences("DataPref", Context.MODE_PRIVATE)
 
                         pref.edit().putString("password_hash", hashedPassword).apply()
                         defaultPref.edit().putString("passwordLockEditText", "").apply()
-                        MainActivity.Protection.encryptionKey = PBKDF2Algo.generateHash(specifiedPassword, "salt".toByteArray())
+
+                        val newKey = PBKDF2Algo.generateHash(specifiedPassword, MainActivity.Protection.salt.toByteArray())
+                        MainActivity.Protection.encryptionKey = newKey
+                        reencryptDocuments(getPref("Security", this).getString("defaultEncryptionKey", null),
+                                newKey)
+                    }
+                }
+                "passwordLockSwitch" -> {
+                    var newKey = getPref("Security", this).getString("defaultEncryptionKey", null)
+
+                    if (!getDefaultPref(this)!!.getBoolean("passwordLockSwitch", false)) {
+                        reencryptDocuments(MainActivity.Protection.encryptionKey,
+                                getPref("Security", this).getString("defaultEncryptionKey", null))
+
+                        MainActivity.Protection.encryptionKey = newKey
+                        getPref("DataPref", this).edit().putString("password_hash", newKey).apply()
                     }
                 }
             }
 
+        }
+    }
+
+    private fun reencryptDocuments(oldKey: String, newKey: String) {
+        for (file in File(applicationContext.applicationInfo.dataDir + "/files/").listFiles()) {
+            val decryptedFileContent = decryptString(file.readText(), oldKey) // Decrypt file with old key
+            file.writeText(encryptString(decryptedFileContent, newKey)) // Encrypt file with new key
         }
     }
 

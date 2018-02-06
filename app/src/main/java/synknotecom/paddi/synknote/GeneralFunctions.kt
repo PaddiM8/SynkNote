@@ -13,7 +13,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_editor.*
-
+import org.apache.commons.lang.RandomStringUtils
+import java.security.SecureRandom
 
 /**
 * Created by PaddiM8 on 1/30/18.
@@ -89,4 +90,9 @@ fun showSoftwareKeyboard(show: Boolean, view: View) {
 
 fun getFileDirectory(context: Context): String {
     return context.applicationInfo.dataDir + "/files/"
+}
+
+fun generateRandomEncryptionKey(): String {
+    return PBKDF2Algo.generateHash(RandomStringUtils.randomAlphanumeric(32),
+            MainActivity.Protection.salt.toByteArray())
 }

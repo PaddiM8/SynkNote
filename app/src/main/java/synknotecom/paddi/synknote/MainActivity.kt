@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main_window.*
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.new_document_dialog.*
 import java.io.File
 import java.util.*
 import kotlinx.android.synthetic.main.password_dialog.*
+import java.io.OutputStreamWriter
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
 class MainActivity : AppCompatActivity() {
@@ -42,19 +44,19 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         fab.setImageResource(R.drawable.ic_add)
+        getSalt()
 
         // Password Lock
         val passwordLockSettingEnabled = getDefaultPref(this)!!
                 .getBoolean("passwordLockSwitch", false)
         val passwordHash = getPref("DataPref", this)
                 .getString("password_hash", null)
-
         if (passwordLockSettingEnabled && Protection.askForPassword && passwordHash != null) {
             askForPassword()
         } else {
             // Set to default encryption key, if the user choose to not use password lock, the encryption key won't be protected locally.
-            Protection.encryptionKey = "" // TODO: Generate encryption key once, save it somewhere, set this variable to the generated encryption key
-
+            if (!passwordLockSettingEnabled)
+                Protection.encryptionKey = getEncryptionKey()
             loadFileList()
             loadDocuments()
         }
@@ -82,6 +84,30 @@ class MainActivity : AppCompatActivity() {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
+    private fun getEncryptionKey(): String {
+        return if (getPref("Security", this).getString("defaultEncryptionKey", null) == null) {
+            val key = generateRandomEncryptionKey()
+            getPref("Security", this).edit()
+                    .putString("defaultEncryptionKey", key)
+                    .apply()
+            key
+        } else {
+            getPref("Security", this).getString("defaultEncryptionKey", null)
+        }
+    }
+
+    private fun getSalt(): String {
+        return if (getPref("Security", this).getString("salt", null) == null) {
+            val salt = BCrypt.gensalt()
+            getPref("Security", this).edit()
+                    .putString("salt", salt)
+                    .apply()
+            salt
+        } else {
+            getPref("Security", this).getString("salt", null)
+        }
+    }
+
     private fun askForPassword() {
         val passwordDialog = createPasswordDialog(this)
         passwordDialog.show()
@@ -92,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             val pref = applicationContext.getSharedPreferences("DataPref", MODE_PRIVATE)
             val dialogInput = passwordDialog.password_input.text.toString()
 
-            if (BCrypt.checkpw(dialogInput, pref.getString("password_hash", null))) {
+            if (PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray()) == pref.getString("password_hash", null)) {
                 passwordDialog.password_input.setText("")
                 passwordDialog.dismiss()
                 loadFileList()
