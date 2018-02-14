@@ -53,7 +53,8 @@ fun showRenameDialog(documentId: Int, view: View) {
 
         renameDocument(documentId, input, view)
         MainActivity.FileList.files[documentId] = File(getFileDirectory(view.context) + input + "." + fileExtension)
-        MainActivity.FileList.adapter.notifyItemChanged(documentId)
+        //MainActivity.FileList.adapter.notifyDataSetChanged()
+        MainActivity.FileList.adapter = Adapter(MainActivity.FileList.files) // TODO: MAKE MORE EFFICIENT DAMN KIT!
         renameDialog.dismiss()
     })
 

@@ -16,19 +16,14 @@ import java.io.File
 
 fun saveDocument(context: Context, fileName: String, textEditorComponent: EditText) {
     var documentContent = textEditorComponent.text.toString()
-
     documentContent = encryptString(documentContent, MainActivity.Protection.encryptionKey)
-
-    val fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-    fos.write(documentContent.toByteArray())
-    fos.close()
+    File(getSaveLocation(context) + fileName).writeText(documentContent)
 }
 
 fun openDocument(id: Int, view: View) {
     val documentFile = MainActivity.FileList.files[id]
     var intent = Intent(view.context, MarkdownEditor::class.java)
     var documentContent = documentFile.readText()
-
     documentContent = decryptString(documentContent, MainActivity.Protection.encryptionKey)
 
     if (documentFile.extension == "txt")
@@ -44,11 +39,9 @@ fun openDocument(id: Int, view: View) {
 
 fun createDocument(name: String, type: String, view: View) {
     val fileName = name + getFileExtensionFromType(type)
-    val fos = view.context.openFileOutput(fileName, Context.MODE_PRIVATE)
-    fos.write("".toByteArray()) // Create empty file
-    fos.close()
+    File(getSaveLocation(view.context) + fileName).writeText("")
 
-    MainActivity.FileList.files.add(File(view.context.applicationInfo.dataDir + "/files/" + fileName))
+    MainActivity.FileList.files.add(File(getSaveLocation(view.context) + fileName))
     MainActivity.FileList.adapter.notifyDataSetChanged()
     openDocument(MainActivity.FileList.files.count() - 1, view)
 }
@@ -61,7 +54,7 @@ fun deleteDocument(id: Int) {
 
 fun renameDocument(id: Int, newName: String, view: View) {
     val documentFile = MainActivity.FileList.files[id]
-    val newFile = File(view.context.applicationInfo.dataDir + "/files/" + newName + "." + documentFile.extension)
+    val newFile = File(getSaveLocation(view.context) + newName + "." + documentFile.extension)
     documentFile.renameTo(newFile)
     MainActivity.FileList.files[id] = newFile
 }
@@ -84,4 +77,8 @@ fun decryptString(input: String, key: String): String {
     } catch (e: Exception) {
         input
     }
+}
+
+fun getSaveLocation(context: Context) : String {
+    return getDefaultPref(context)!!.getString("localFolderEditText", null)
 }

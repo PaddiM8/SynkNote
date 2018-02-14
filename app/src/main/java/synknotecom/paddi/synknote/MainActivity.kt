@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     object Protection {
         var askForPassword = true
         var encryptionKey = ""
-        val salt = "salt" // TODO: Fix salt
+        var salt = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +45,12 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
         fab.setImageResource(R.drawable.ic_add)
-        getSalt()
+        Protection.salt = getSalt()
 
+
+        if (getDefaultPref(this)!!.getString("localFolderEditText",  null) == null)
+            getDefaultPref(this)!!.edit()
+                    .putString("localFolderEditText", applicationInfo.dataDir + "/files/").apply()
         // Password Lock
         val passwordLockSettingEnabled = getDefaultPref(this)!!
                 .getBoolean("passwordLockSwitch", false)
@@ -150,12 +155,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadFileList() {
-        val directory = File(applicationInfo.dataDir + "/files/") // Directory from application root
+        val directory = File(getSaveLocation(this)) // Directory from application root
 
         if (directory.exists()) {
             val files = directory.listFiles()
             Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-            FileList.files = ArrayList(files.toList())
+            FileList.files = ArrayList(files.filter { x -> x.isFile }.toList())
         }
     }
 

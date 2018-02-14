@@ -60,15 +60,22 @@ class SettingsActivity : AppCompatActivity() {
                         getPref("DataPref", this).edit().putString("password_hash", newKey).apply()
                     }
                 }
+                "localFolderEditText" -> {
+                    getPref("DataPref", this).edit().putStringSet(
+                            getDefaultPref(this)!!.getString("localFolderEditText", null), null).apply()
+                }
             }
 
         }
     }
 
     private fun reencryptDocuments(oldKey: String, newKey: String) {
-        for (file in File(applicationContext.applicationInfo.dataDir + "/files/").listFiles()) {
-            val decryptedFileContent = decryptString(file.readText(), oldKey) // Decrypt file with old key
-            file.writeText(encryptString(decryptedFileContent, newKey)) // Encrypt file with new key
+        val files = File(applicationContext.applicationInfo.dataDir + "/files/").listFiles()
+        if (files.count() > 0) {
+            for (file in files) {
+                val decryptedFileContent = decryptString(file.readText(), oldKey) // Decrypt file with old key
+                file.writeText(encryptString(decryptedFileContent, newKey)) // Encrypt file with new key
+            }
         }
     }
 

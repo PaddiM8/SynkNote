@@ -35,10 +35,9 @@ class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adap
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        fun bindItems(user: File) {
-            itemView.text_view_document_title.text = user.nameWithoutExtension
-            itemView.text_view_date.text = getDate(user.lastModified(), "dd/MM")
+        fun bindItems(file: File) {
+            itemView.text_view_document_title.text = file.nameWithoutExtension
+            itemView.text_view_date.text = getDate(file.lastModified(), "dd/MM")
         }
     }
 }

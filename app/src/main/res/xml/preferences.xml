@@ -35,7 +35,7 @@
     <PreferenceCategory android:title="@string/local_folder">
 
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="/android/data"
             android:key="localFolderEditText"
             android:selectAllOnFocus="true"
             android:singleLine="true"
