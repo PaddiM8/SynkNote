@@ -157,6 +157,7 @@ class MainActivity : AppCompatActivity() {
         newDocumentDialog.show()
         showSoftwareKeyboard(true, newDocumentDialog.document_name_input)
 
+        // New document dialog on buttonCreate click
         newDocumentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
             val documentType = newDocumentDialog.spinner.selectedItem.toString()
             val documentName = newDocumentDialog.document_name_input.text.toString()
