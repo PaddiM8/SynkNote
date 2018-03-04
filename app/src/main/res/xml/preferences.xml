@@ -2,7 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/appearance">
-
         <CheckBoxPreference
             android:id="@+id/dark_theme_switch"
             android:defaultValue="false"
@@ -22,6 +21,11 @@
             android:defaultValue="false"
             android:key="passwordLockSwitch"
             android:title="@string/password_lock" />
+        <SwitchPreference
+            android:id="@+id/encrypt_files_switch"
+            android:defaultValue="true"
+            android:key="encryptFilesSwitch"
+            android:title="@string/encrypt_files" />
         <EditTextPreference
             android:id="@+id/password_input_settings"
             android:defaultValue="password"
@@ -33,13 +37,14 @@
             android:title="@string/password" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/local_folder">
-
         <EditTextPreference
+            android:id="@+id/local_folder_edit_text"
             android:defaultValue="/android/data"
             android:key="localFolderEditText"
+            android:focusableInTouchMode="false"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:text="/android/data"
+            android:inputType="text"
             android:title="/android/data" />
     </PreferenceCategory>
 

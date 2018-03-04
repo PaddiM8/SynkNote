@@ -3,6 +3,7 @@
     <string-array name="newDocumentSpinnerArray">
         <item>Normal Document</item>
         <item>Markdown Document</item>
+        <item>Folder</item>
     </string-array>
     <string-array name="languages">
         <item>English</item>

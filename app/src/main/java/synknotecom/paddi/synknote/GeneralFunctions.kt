@@ -71,7 +71,7 @@ fun loadTheme(context: Context) {
         context.setTheme(R.style.AppTheme_Dark)
 }
 
-fun getDefaultPref(context: Context): SharedPreferences? {
+fun getDefaultPref(context: Context): SharedPreferences {
     return PreferenceManager.getDefaultSharedPreferences(context)
 }
 

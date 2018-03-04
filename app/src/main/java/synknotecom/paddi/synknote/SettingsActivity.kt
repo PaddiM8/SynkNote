@@ -33,7 +33,7 @@ class SettingsActivity : AppCompatActivity() {
             when (tag) {
                 "darkThemeSettingsCheckbox" -> this.recreate()
                 "passwordLockEditText" -> {
-                    val defaultPref = getDefaultPref(this)!!
+                    val defaultPref = getDefaultPref(this)
                     val specifiedPassword = defaultPref.getString("passwordLockEditText", "")
 
                     if (defaultPref.getBoolean("passwordLockSwitch", false) && specifiedPassword != "") {
@@ -50,9 +50,9 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
                 "passwordLockSwitch" -> {
-                    var newKey = getPref("Security", this).getString("defaultEncryptionKey", null)
+                    val newKey = getPref("Security", this).getString("defaultEncryptionKey", null)
 
-                    if (!getDefaultPref(this)!!.getBoolean("passwordLockSwitch", false)) {
+                    if (!getDefaultPref(this).getBoolean("passwordLockSwitch", false)) {
                         reencryptDocuments(MainActivity.Protection.encryptionKey,
                                 getPref("Security", this).getString("defaultEncryptionKey", null))
 
@@ -61,8 +61,9 @@ class SettingsActivity : AppCompatActivity() {
                     }
                 }
                 "localFolderEditText" -> {
-                    getPref("DataPref", this).edit().putStringSet(
-                            getDefaultPref(this)!!.getString("localFolderEditText", null), null).apply()
+                    //val input = getDefaultPref(this).getString("localFolderEditText", null)
+                    //if (!input.endsWith("/"))
+                    //    getDefaultPref(this).edit().putString("localFolderEditText", input + "/").apply()
                 }
             }
 

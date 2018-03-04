@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import org.apache.commons.lang.StringUtils
 import org.jasypt.util.text.BasicTextEncryptor
 import java.io.File
 
@@ -16,7 +17,9 @@ import java.io.File
 
 fun saveDocument(context: Context, fileName: String, textEditorComponent: EditText) {
     var documentContent = textEditorComponent.text.toString()
-    documentContent = encryptString(documentContent, MainActivity.Protection.encryptionKey)
+
+    if (getDefaultPref(context).getBoolean("encryptFilesSwitch", false))
+        documentContent = encryptString(documentContent, MainActivity.Protection.encryptionKey)
     File(getSaveLocation(context) + fileName).writeText(documentContent)
 }
 
@@ -39,11 +42,19 @@ fun openDocument(id: Int, view: View) {
 
 fun createDocument(name: String, type: String, view: View) {
     val fileName = name + getFileExtensionFromType(type)
-    File(getSaveLocation(view.context) + fileName).writeText("")
+    File(getSaveLocation(view.context)).mkdirs()
+    File(getSaveLocation(view.context) + fileName).createNewFile()
 
     MainActivity.FileList.files.add(File(getSaveLocation(view.context) + fileName))
     MainActivity.FileList.adapter.notifyDataSetChanged()
     openDocument(MainActivity.FileList.files.count() - 1, view)
+}
+
+fun createFolder(name: String, view: View) {
+    val folder = File(getSaveLocation(view.context) + name)
+    folder.mkdirs()
+    MainActivity.FileList.files.add(folder)
+    MainActivity.FileList.adapter.notifyDataSetChanged()
 }
 
 fun deleteDocument(id: Int) {
@@ -79,6 +90,14 @@ fun decryptString(input: String, key: String): String {
     }
 }
 
-fun getSaveLocation(context: Context) : String {
-    return getDefaultPref(context)!!.getString("localFolderEditText", null)
+fun getSaveLocation(context: Context): String {
+    return getDefaultPref(context).getString("localFolderEditText", null)
+}
+
+fun fileExists(fileName: String): Boolean {
+    return false
+}
+
+fun isValidFileName(fileName: String): Boolean {
+    return !StringUtils.containsAny(fileName, "|\\?*<\\\":>/'")
 }

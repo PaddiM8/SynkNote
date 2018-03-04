@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.new_document_dialog.*
 import kotlinx.android.synthetic.main.rename_dialog.*
 import synknotecom.paddi.synknote.R.id.rename_document_input
@@ -48,13 +49,20 @@ fun showRenameDialog(documentId: Int, view: View) {
     renameDialog.show()
 
     renameDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
-        var input = renameDialog.rename_document_input.text.toString()
-        var fileExtension = MainActivity.FileList.files[documentId].extension
+        val input = renameDialog.rename_document_input.text.toString()
+        val fileExtension = MainActivity.FileList.files[documentId].extension
 
-        renameDocument(documentId, input, view)
+        // Validation
+        when {
+            fileExists(input) -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
+            input.isEmpty() -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
+            !isValidFileName(input) -> Toast.makeText(view.context, "File name contains illegal characters!", Toast.LENGTH_LONG).show()
+            else -> renameDocument(documentId, input, view)
+        }
+
         MainActivity.FileList.files[documentId] = File(getFileDirectory(view.context) + input + "." + fileExtension)
         //MainActivity.FileList.adapter.notifyDataSetChanged()
-        MainActivity.FileList.adapter = Adapter(MainActivity.FileList.files) // TODO: MAKE MORE EFFICIENT DAMN KIT!
+        MainActivity.FileList.adapter = Adapter(MainActivity.FileList.files) // TODO: MAKE MORE EFFICIENT DAMN IT!
         renameDialog.dismiss()
     })
 

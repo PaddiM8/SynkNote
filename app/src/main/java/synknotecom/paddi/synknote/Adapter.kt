@@ -1,5 +1,6 @@
 package synknotecom.paddi.synknote
 
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,12 @@ class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adap
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(file: File) {
+            // Icon
+            if (file.isFile)
+                itemView.image_view_document_icon.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_file))
+            else
+                itemView.image_view_document_icon.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_folder))
+
             itemView.text_view_document_title.text = file.nameWithoutExtension
             itemView.text_view_date.text = getDate(file.lastModified(), "dd/MM")
         }

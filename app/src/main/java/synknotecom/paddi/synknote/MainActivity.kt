@@ -1,5 +1,6 @@
 package synknotecom.paddi.synknote
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +18,10 @@ import java.io.File
 import java.util.*
 import kotlinx.android.synthetic.main.password_dialog.*
 import java.io.OutputStreamWriter
+import android.support.v4.app.ActivityCompat
+import android.content.pm.PackageManager
+import android.support.v4.content.ContextCompat
+
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
 class MainActivity : AppCompatActivity() {
@@ -47,12 +52,18 @@ class MainActivity : AppCompatActivity() {
         fab.setImageResource(R.drawable.ic_add)
         Protection.salt = getSalt()
 
+        promptPermissions()
 
-        if (getDefaultPref(this)!!.getString("localFolderEditText",  null) == null)
-            getDefaultPref(this)!!.edit()
+        val localFolderTextInput = getDefaultPref(this).getString("localFolderEditText", null)
+        if (localFolderTextInput == null)
+            getDefaultPref(this).edit()
                     .putString("localFolderEditText", applicationInfo.dataDir + "/files/").apply()
+        else if (!localFolderTextInput.endsWith("/"))
+            getDefaultPref(this).edit()
+                .putString("localFolderEditText", localFolderTextInput + "/").apply()
+
         // Password Lock
-        val passwordLockSettingEnabled = getDefaultPref(this)!!
+        val passwordLockSettingEnabled = getDefaultPref(this)
                 .getBoolean("passwordLockSwitch", false)
         val passwordHash = getPref("DataPref", this)
                 .getString("password_hash", null)
@@ -82,6 +93,12 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Protection.askForPassword = true
+    }
+
+    private fun promptPermissions() {
+        // Storage Permission not granted
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
     }
 
     private fun toggleKeyboard() {
@@ -141,9 +158,14 @@ class MainActivity : AppCompatActivity() {
         showSoftwareKeyboard(true, newDocumentDialog.document_name_input)
 
         newDocumentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
-            createDocument(newDocumentDialog.document_name_input.text.toString(),
-                    newDocumentDialog.spinner.selectedItem.toString(),
-                    window.decorView)
+            val documentType = newDocumentDialog.spinner.selectedItem.toString()
+            val documentName = newDocumentDialog.document_name_input.text.toString()
+
+            if (documentType == "Folder")
+                createFolder(documentName, window.decorView)
+            else
+                createDocument(documentName, documentType, window.decorView)
+
             newDocumentDialog.document_name_input.text.clear()
             newDocumentDialog.dismiss()
         })
@@ -160,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         if (directory.exists()) {
             val files = directory.listFiles()
             Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-            FileList.files = ArrayList(files.filter { x -> x.isFile }.toList())
+            FileList.files = ArrayList(files.toList()) //ArrayList(files.filter { x -> x.isFile }.toList())
         }
     }
 

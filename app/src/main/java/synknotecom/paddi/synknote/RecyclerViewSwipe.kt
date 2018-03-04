@@ -41,7 +41,7 @@ fun initializeItemTouchHelper(view: View): ItemTouchHelper.SimpleCallback {
 
             if (dX > 0) {
                 val rect = RectF(
-                        viewHolder.itemView!!.left.toFloat(),
+                        viewHolder.itemView.left.toFloat(),
                         viewHolder.itemView.top.toFloat(),
                         dX,
                         viewHolder.itemView.bottom.toFloat()
