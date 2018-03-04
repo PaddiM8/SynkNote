@@ -38,33 +38,6 @@ fun getDate(milliSeconds: Long, dateFormat: String): String {
     return formatter.format(calendar.time)
 }
 
-fun languageNameToLocale(languageName: String): Locale {
-    if (languageName == "Swedish")
-        return Locale("se")
-    else if (languageName == "English")
-        return Locale("en")
-    return Locale("en")
-}
-
-@SuppressLint("ObsoleteSdkInt")
-fun setAppLocale(language: String, activity: Activity) {
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-        val resources = activity.resources
-        val configuration = resources.configuration
-        configuration.setLocale(Locale(language))
-        activity.applicationContext.createConfigurationContext(configuration)
-    } else {
-        val locale = Locale(language)
-        Locale.setDefault(locale)
-        val config = activity.resources.configuration
-        config.locale = locale
-        activity.resources.updateConfiguration(config,
-                activity.resources.displayMetrics)
-    }
-
-}
-
 fun loadTheme(context: Context) {
     val defaultPref = PreferenceManager.getDefaultSharedPreferences(context)
     if (defaultPref.getBoolean("darkThemeSettingsCheckbox", false))
@@ -88,11 +61,14 @@ fun showSoftwareKeyboard(show: Boolean, view: View) {
         imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun getFileDirectory(context: Context): String {
-    return context.applicationInfo.dataDir + "/files/"
-}
-
 fun generateRandomEncryptionKey(): String {
     return PBKDF2Algo.generateHash(RandomStringUtils.randomAlphanumeric(32),
             MainActivity.Protection.salt.toByteArray())
+}
+
+fun fixUrl(url: String): String {
+    return if (!url.endsWith("/"))
+        url + "/"
+    else
+        url
 }

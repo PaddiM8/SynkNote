@@ -14,9 +14,10 @@ fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false):
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
 
-fun <T : RecyclerView.ViewHolder> T.onClick(event: (position: Int, type: Int) -> Unit): T {
+fun <T: RecyclerView.ViewHolder> T.onClick(event: (position: Int, type: Int) -> Unit): T {
     itemView.setOnClickListener {
         event.invoke(adapterPosition, itemViewType)
     }
+
     return this
 }

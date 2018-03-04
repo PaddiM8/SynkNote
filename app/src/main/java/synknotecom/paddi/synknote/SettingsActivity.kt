@@ -12,6 +12,10 @@ import java.io.File
 
 class SettingsActivity : AppCompatActivity() {
 
+    object OnStart {
+        var localFolderLocation: String = ""
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean("darkThemeSettingsCheckbox", false))
@@ -29,10 +33,14 @@ class SettingsActivity : AppCompatActivity() {
                 .replace(android.R.id.content, SettingsFragment())
                 .commit()
 
+        // Save current set local folder location, to later see if it was changed
+        OnStart.localFolderLocation = getDefaultPref(this)
+                                        .getString("localFolderEditText", null)
+
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener { sharedPreferences: SharedPreferences, tag: String ->
             when (tag) {
                 "darkThemeSettingsCheckbox" -> this.recreate()
-                "passwordLockEditText" -> {
+                /*"passwordLockEditText" -> {
                     val defaultPref = getDefaultPref(this)
                     val specifiedPassword = defaultPref.getString("passwordLockEditText", "")
 
@@ -48,13 +56,14 @@ class SettingsActivity : AppCompatActivity() {
                         reencryptDocuments(getPref("Security", this).getString("defaultEncryptionKey", null),
                                 newKey)
                     }
-                }
+                }*/
                 "passwordLockSwitch" -> {
                     val newKey = getPref("Security", this).getString("defaultEncryptionKey", null)
 
                     if (!getDefaultPref(this).getBoolean("passwordLockSwitch", false)) {
-                        reencryptDocuments(MainActivity.Protection.encryptionKey,
-                                getPref("Security", this).getString("defaultEncryptionKey", null))
+                        reencryptDocuments(File(getSaveLocation(this)),
+                                           MainActivity.Protection.encryptionKey,
+                                           getPref("Security", this).getString("defaultEncryptionKey", null))
 
                         MainActivity.Protection.encryptionKey = newKey
                         getPref("DataPref", this).edit().putString("password_hash", newKey).apply()
@@ -70,20 +79,52 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun reencryptDocuments(oldKey: String, newKey: String) {
-        val files = File(applicationContext.applicationInfo.dataDir + "/files/").listFiles()
-        if (files.count() > 0) {
+    private fun reencryptDocuments(folder: File, oldKey: String, newKey: String) {
+        val files = folder.listFiles()
+        if (files != null) {
             for (file in files) {
-                val decryptedFileContent = decryptString(file.readText(), oldKey) // Decrypt file with old key
-                file.writeText(encryptString(decryptedFileContent, newKey)) // Encrypt file with new key
+                if (file.isFile) {
+                    val decryptedFileContent = decryptString(file.readText(), oldKey) // Decrypt file with old key
+                    file.writeText(encryptString(decryptedFileContent, newKey)) // Encrypt file with new key
+                } else {
+                    reencryptDocuments(file, oldKey, newKey)
+                }
             }
         }
     }
 
     private fun applySettings() {
+
+        // Check if folder location was changed
+        val folderLocation = getDefaultPref(this).getString("localFolderEditText", null)
+        if (OnStart.localFolderLocation != folderLocation)
+            MainActivity.FileList.currentDirectory = folderLocation // Change current directory to the new folder location
+
+        applyPasswordLockHash()
+
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         MainActivity.Protection.askForPassword = false
+    }
+
+    private fun applyPasswordLockHash() {
+        val defaultPref = getDefaultPref(this)
+        val specifiedPassword = defaultPref.getString("passwordLockEditText", "")
+
+        if (defaultPref.getBoolean("passwordLockSwitch", false) && specifiedPassword != "") {
+            val hashedPassword = PBKDF2Algo.generateHash(specifiedPassword, MainActivity.Protection.salt.toByteArray())
+            val pref = applicationContext.getSharedPreferences("DataPref", Context.MODE_PRIVATE)
+
+            if (hashedPassword != MainActivity.Protection.encryptionKey) {
+                MainActivity.Protection.encryptionKey = hashedPassword
+                reencryptDocuments(File(getSaveLocation(this)),
+                                   pref.getString("password_hash", null),
+                                   hashedPassword)
+            }
+
+            pref.edit().putString("password_hash", hashedPassword).apply()
+            defaultPref.edit().putString("passwordLockEditText", "").apply()
+        }
     }
 
     override fun onBackPressed() {

@@ -17,22 +17,21 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/security">
         <SwitchPreference
-            android:id="@+id/password_lock_switch"
-            android:defaultValue="false"
-            android:key="passwordLockSwitch"
-            android:title="@string/password_lock" />
-        <SwitchPreference
             android:id="@+id/encrypt_files_switch"
             android:defaultValue="true"
             android:key="encryptFilesSwitch"
             android:title="@string/encrypt_files" />
+        <SwitchPreference
+            android:id="@+id/password_lock_switch"
+            android:defaultValue="false"
+            android:key="passwordLockSwitch"
+            android:title="@string/password_lock" />
         <EditTextPreference
             android:id="@+id/password_input_settings"
             android:defaultValue="password"
             android:key="passwordLockEditText"
-            android:password="true"
+            android:inputType="textPassword"
             android:dependency="passwordLockSwitch"
-            android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/password" />
     </PreferenceCategory>

@@ -6,9 +6,12 @@ import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import kotlinx.android.synthetic.main.activity_main_window.*
 import org.apache.commons.lang.StringUtils
 import org.jasypt.util.text.BasicTextEncryptor
+import synknotecom.paddi.synknote.R.id.recycler_view
 import java.io.File
+import java.util.*
 
 
 /**
@@ -20,7 +23,7 @@ fun saveDocument(context: Context, fileName: String, textEditorComponent: EditTe
 
     if (getDefaultPref(context).getBoolean("encryptFilesSwitch", false))
         documentContent = encryptString(documentContent, MainActivity.Protection.encryptionKey)
-    File(getSaveLocation(context) + fileName).writeText(documentContent)
+    File(fixUrl(MainActivity.FileList.currentDirectory) + fileName).writeText(documentContent)
 }
 
 fun openDocument(id: Int, view: View) {
@@ -42,19 +45,28 @@ fun openDocument(id: Int, view: View) {
 
 fun createDocument(name: String, type: String, view: View) {
     val fileName = name + getFileExtensionFromType(type)
-    File(getSaveLocation(view.context)).mkdirs()
-    File(getSaveLocation(view.context) + fileName).createNewFile()
+    val directory = fixUrl(MainActivity.FileList.currentDirectory)
+    File(directory).mkdirs()
+    File(directory + fileName).createNewFile()
 
-    MainActivity.FileList.files.add(File(getSaveLocation(view.context) + fileName))
+    MainActivity.FileList.files.add(File(directory + fileName))
     MainActivity.FileList.adapter.notifyDataSetChanged()
     openDocument(MainActivity.FileList.files.count() - 1, view)
 }
 
-fun createFolder(name: String, view: View) {
-    val folder = File(getSaveLocation(view.context) + name)
+fun createFolder(name: String) {
+    val folder = File(fixUrl(MainActivity.FileList.currentDirectory) + name)
     folder.mkdirs()
-    MainActivity.FileList.files.add(folder)
-    MainActivity.FileList.adapter.notifyDataSetChanged()
+    MainActivity.FileList.files.add(0, folder)
+    MainActivity.FileList.adapter.notifyItemInserted(0)
+}
+
+fun openFolder(id: Int, view: View) {
+    MainActivity.FileList.currentDirectory = MainActivity.FileList.files[id].path
+
+    val mainActivity = MainActivity()
+    mainActivity.loadFileList()
+    mainActivity.loadDocuments()
 }
 
 fun deleteDocument(id: Int) {
@@ -65,7 +77,7 @@ fun deleteDocument(id: Int) {
 
 fun renameDocument(id: Int, newName: String, view: View) {
     val documentFile = MainActivity.FileList.files[id]
-    val newFile = File(getSaveLocation(view.context) + newName + "." + documentFile.extension)
+    val newFile = File(MainActivity.FileList.currentDirectory + newName + "." + documentFile.extension)
     documentFile.renameTo(newFile)
     MainActivity.FileList.files[id] = newFile
 }

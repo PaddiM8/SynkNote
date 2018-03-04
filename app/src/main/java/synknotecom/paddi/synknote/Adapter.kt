@@ -18,7 +18,10 @@ class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adap
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapter.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_row, parent, false)
         return ViewHolder(v).onClick { i: Int, _: Int ->
-            openDocument(i, parent.rootView)
+            if (fileList[i].isFile)
+                openDocument(i, parent.rootView)
+            else // If it's a folder
+                openFolder(i, parent.rootView)
         }
     }
 

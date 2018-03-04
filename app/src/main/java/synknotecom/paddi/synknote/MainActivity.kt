@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     object FileList {
         var files = arrayListOf<File>()
+        var currentDirectory: String = ""
         lateinit var adapter: Adapter
     }
 
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         promptPermissions()
 
+        // Make sure localFolderPath is correct
         val localFolderTextInput = getDefaultPref(this).getString("localFolderEditText", null)
         if (localFolderTextInput == null)
             getDefaultPref(this).edit()
@@ -62,11 +64,17 @@ class MainActivity : AppCompatActivity() {
             getDefaultPref(this).edit()
                 .putString("localFolderEditText", localFolderTextInput + "/").apply()
 
+        // Load currentDirectory
+        if (FileList.currentDirectory == "")
+            FileList.currentDirectory = getDefaultPref(this)
+                    .getString("localFolderEditText", null)
+
         // Password Lock
         val passwordLockSettingEnabled = getDefaultPref(this)
                 .getBoolean("passwordLockSwitch", false)
         val passwordHash = getPref("DataPref", this)
                 .getString("password_hash", null)
+
         if (passwordLockSettingEnabled && Protection.askForPassword && passwordHash != null) {
             askForPassword()
         } else {
@@ -163,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             val documentName = newDocumentDialog.document_name_input.text.toString()
 
             if (documentType == "Folder")
-                createFolder(documentName, window.decorView)
+                createFolder(documentName)
             else
                 createDocument(documentName, documentType, window.decorView)
 
@@ -177,19 +185,35 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun loadFileList() {
-        val directory = File(getSaveLocation(this)) // Directory from application root
+    /*private fun loadFileList() {
+        val directory = File(MainActivity.FileList.currentDirectory) // Directory from application root
 
         if (directory.exists()) {
             val files = directory.listFiles()
-            Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-            FileList.files = ArrayList(files.toList()) //ArrayList(files.filter { x -> x.isFile }.toList())
-        }
-    }
 
-    private fun loadDocuments() {
+            if (files != null) {
+                Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
+                FileList.files = ArrayList(files.toList())
+            }
+        }
+    }*/
+
+    fun loadDocuments() {
         FileList.adapter = Adapter(FileList.files)
         recycler_view.adapter = FileList.adapter
+    }
+
+    fun loadFileList() {
+        val directory = File(MainActivity.FileList.currentDirectory) // Directory from application root
+
+        if (directory.exists()) {
+            val files = directory.listFiles()
+
+            if (files != null) {
+                Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
+                MainActivity.FileList.files = ArrayList(files.toList())
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
