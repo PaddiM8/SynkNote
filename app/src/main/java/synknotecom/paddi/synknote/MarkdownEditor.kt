@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
@@ -50,6 +51,10 @@ class MarkdownEditor : AppCompatActivity() {
                 showSoftwareKeyboard(false, view)
             }
         }
+
+        //text_editor.setOnKeyListener { view: View, i: Int, keyEvent: KeyEvent ->
+
+        //}
 
         editorTabs.setup()
 

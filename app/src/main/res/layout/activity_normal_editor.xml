@@ -14,5 +14,6 @@
         android:ems="10"
         android:gravity="top|start"
         android:inputType="textMultiLine"
+        android:typeface="serif"
         android:padding="5dp" />
 </RelativeLayout>

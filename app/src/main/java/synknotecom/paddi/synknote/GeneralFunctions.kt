@@ -11,6 +11,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import org.apache.commons.lang.RandomStringUtils
+import android.text.Layout
+import android.text.Selection
+import android.text.Selection.getSelectionStart
+import android.widget.EditText
+
+
 
 
 /**
@@ -72,4 +78,14 @@ fun fixUrl(url: String): String {
 
 fun isInMainDirectory(context: Context): Boolean {
     return MainActivity.FileList.currentDirectory == getSaveLocation(context)
+}
+
+fun getCurrentCursorLine(editText: EditText): Int {
+    val selectionStart = Selection.getSelectionStart(editText.text)
+    val layout = editText.layout
+
+    return if (selectionStart != -1) {
+        layout.getLineForOffset(selectionStart)
+    } else -1
+
 }

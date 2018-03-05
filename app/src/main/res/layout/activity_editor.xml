@@ -52,6 +52,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:paddingTop="15dp"
+                        android:typeface="serif"
                         android:textIsSelectable="true"
                         tools:ignore="LabelFor" />
 
@@ -77,6 +78,7 @@
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:textIsSelectable="true"
+                        android:typeface="serif"
                         android:textColor="?attr/textColorEditor"
                         tools:ignore="LabelFor" />
 
