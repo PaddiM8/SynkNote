@@ -14,10 +14,10 @@ import synknotecom.paddi.synknote.R.id.rename_document_input
 import java.io.File
 
 /**
- * Created by PaddiM8 on 2/4/18.
- */
+* Created by PaddiM8 on 2/4/18.
+*/
 
-@SuppressLint("InflateParams")
+        @SuppressLint("InflateParams")
 fun createNewDocumentDialog(context: Context): AlertDialog {
     val dialog = AlertDialog.Builder(context)
     val dialogView = LayoutInflater.from(context).inflate(R.layout.new_document_dialog, null)
@@ -31,6 +31,7 @@ fun createNewDocumentDialog(context: Context): AlertDialog {
     return dialog.create()
 }
 
+@SuppressLint("InflateParams")
 fun createRenameDialog(context: Context): AlertDialog {
     val dialog = AlertDialog.Builder(context)
     val dialogView = LayoutInflater.from(context).inflate(R.layout.rename_dialog, null)
@@ -60,9 +61,8 @@ fun showRenameDialog(documentId: Int, view: View) {
             else -> renameDocument(documentId, input, view)
         }
 
-        MainActivity.FileList.files[documentId] = File(MainActivity.FileList.currentDirectory + input + "." + fileExtension)
-        //MainActivity.FileList.adapter.notifyDataSetChanged()
-        MainActivity.FileList.adapter = Adapter(MainActivity.FileList.files) // TODO: MAKE MORE EFFICIENT DAMN IT!
+        MainActivity.FileList.files[documentId] = File(MainActivity.FileList.currentDirectory + "/" + input + "." + fileExtension)
+        MainActivity.FileList.adapter.notifyDataSetChanged()
         renameDialog.dismiss()
     })
 
@@ -71,6 +71,7 @@ fun showRenameDialog(documentId: Int, view: View) {
     })
 }
 
+@SuppressLint("InflateParams")
 fun createPasswordDialog(context: Context): AlertDialog {
     val dialog = AlertDialog.Builder(context)
     val dialogView = LayoutInflater.from(context).inflate(R.layout.password_dialog, null)

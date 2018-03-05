@@ -2,6 +2,7 @@ package synknotecom.paddi.synknote
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import java.io.File
 * Created by PaddiM8 on 1/31/18.
 */
 
-class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adapter.ViewHolder>() {
+class Adapter(private val fileList: ArrayList<File>, private val mainActivity: MainActivity) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapter.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_row, parent, false)
@@ -21,7 +22,7 @@ class Adapter(private val fileList: ArrayList<File>) : RecyclerView.Adapter<Adap
             if (fileList[i].isFile)
                 openDocument(i, parent.rootView)
             else // If it's a folder
-                openFolder(i, parent.rootView)
+                openFolder(i, mainActivity)
         }
     }
 

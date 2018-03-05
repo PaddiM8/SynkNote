@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
-import android.os.Build
-import android.util.Log
 import android.app.Activity
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import kotlinx.android.synthetic.main.activity_editor.*
 import org.apache.commons.lang.RandomStringUtils
-import java.security.SecureRandom
+
 
 /**
 * Created by PaddiM8 on 1/30/18.
@@ -71,4 +68,8 @@ fun fixUrl(url: String): String {
         url + "/"
     else
         url
+}
+
+fun isInMainDirectory(context: Context): Boolean {
+    return MainActivity.FileList.currentDirectory == getSaveLocation(context)
 }

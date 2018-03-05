@@ -61,10 +61,8 @@ fun createFolder(name: String) {
     MainActivity.FileList.adapter.notifyItemInserted(0)
 }
 
-fun openFolder(id: Int, view: View) {
+fun openFolder(id: Int, mainActivity: MainActivity) {
     MainActivity.FileList.currentDirectory = MainActivity.FileList.files[id].path
-
-    val mainActivity = MainActivity()
     mainActivity.loadFileList()
     mainActivity.loadDocuments()
 }

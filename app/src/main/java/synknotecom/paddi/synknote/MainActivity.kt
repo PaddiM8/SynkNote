@@ -21,6 +21,9 @@ import java.io.OutputStreamWriter
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
+import android.view.KeyEvent.KEYCODE_BACK
+
+
 
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -85,6 +88,12 @@ class MainActivity : AppCompatActivity() {
             loadDocuments()
         }
 
+        // Back button
+        if (isInMainDirectory(this))
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        else
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         // Setup ItemTouchHelper
         val helper = ItemTouchHelper(initializeItemTouchHelper(window.decorView))
         helper.attachToRecyclerView(recycler_view)
@@ -101,6 +110,23 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Protection.askForPassword = true
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBack()
+            true
+        } else
+            super.onKeyDown(keyCode, event)
+    }
+
+    private fun onBack() {
+        // Go to main directory
+        if (!isInMainDirectory(this)) {
+            FileList.currentDirectory = getSaveLocation(this)
+            loadFileList()
+            loadDocuments()
+        }
     }
 
     private fun promptPermissions() {
@@ -185,21 +211,8 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    /*private fun loadFileList() {
-        val directory = File(MainActivity.FileList.currentDirectory) // Directory from application root
-
-        if (directory.exists()) {
-            val files = directory.listFiles()
-
-            if (files != null) {
-                Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-                FileList.files = ArrayList(files.toList())
-            }
-        }
-    }*/
-
     fun loadDocuments() {
-        FileList.adapter = Adapter(FileList.files)
+        FileList.adapter = Adapter(FileList.files, this)
         recycler_view.adapter = FileList.adapter
     }
 
