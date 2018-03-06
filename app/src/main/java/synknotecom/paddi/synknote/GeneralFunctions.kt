@@ -4,16 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
-import android.app.Activity
 import android.content.SharedPreferences
+import android.graphics.Point
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import org.apache.commons.lang.RandomStringUtils
-import android.text.Layout
 import android.text.Selection
-import android.text.Selection.getSelectionStart
+import android.util.Range
 import android.widget.EditText
 
 
@@ -80,12 +79,15 @@ fun isInMainDirectory(context: Context): Boolean {
     return MainActivity.FileList.currentDirectory == getSaveLocation(context)
 }
 
-fun getCurrentCursorLine(editText: EditText): Int {
+fun getCurrentLinePoint(editText: EditText): Point {
     val selectionStart = Selection.getSelectionStart(editText.text)
     val layout = editText.layout
 
     return if (selectionStart != -1) {
-        layout.getLineForOffset(selectionStart)
-    } else -1
+        val lineNumber = layout.getLineForOffset(selectionStart)
+        val lineStart = layout.getLineStart(lineNumber)
+        val lineEnd = layout.getLineEnd(lineNumber)
+        Point(lineStart, lineEnd)
+    } else Point(-1, -1)
 
 }

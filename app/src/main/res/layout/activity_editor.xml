@@ -45,15 +45,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:textColor="?attr/textColorEditor"
+                        android:fontFamily="sans-serif"
                         android:gravity="top"
                         android:inputType="textMultiLine"
                         android:paddingBottom="15dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
                         android:paddingTop="15dp"
-                        android:typeface="serif"
+                        android:textColor="?attr/textColorEditor"
                         android:textIsSelectable="true"
+                        android:textSize="24sp"
+                        android:typeface="serif"
                         tools:ignore="LabelFor" />
 
                 </LinearLayout>
