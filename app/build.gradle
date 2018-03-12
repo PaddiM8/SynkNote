@@ -5,11 +5,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "synknotecom.paddi.synknote"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,24 +20,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.android.support:support-v4:27.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'ru.noties:markwon:1.0.3'
     compile 'ru.noties:markwon-image-loader:1.0.3'
     compile 'ru.noties:markwon-view:1.0.3'
-    compile 'com.android.support:preference-v7:26.1.0'
-    compile 'com.android.support:preference-v14:26.1.0'
-    compile group: 'org.jasypt', name: 'jasypt', version: '1.9.2'
+    compile 'com.android.support:preference-v7:27.1.0'
+    compile 'com.android.support:preference-v14:27.1.0'
+    compile 'org.jasypt:jasypt:1.9.2'
     compile 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
     compile 'commons-lang:commons-lang:2.6'
+    compile 'com.1gravity:android-rteditor:1.6.7'
 }

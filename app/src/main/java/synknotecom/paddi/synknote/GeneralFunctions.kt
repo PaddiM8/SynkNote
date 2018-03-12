@@ -70,7 +70,7 @@ fun generateRandomEncryptionKey(): String {
 
 fun fixUrl(url: String): String {
     return if (!url.endsWith("/"))
-        url + "/"
+        "$url/"
     else
         url
 }
