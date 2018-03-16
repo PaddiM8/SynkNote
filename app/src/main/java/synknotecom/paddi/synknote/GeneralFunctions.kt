@@ -79,7 +79,7 @@ fun isInMainDirectory(context: Context): Boolean {
     return MainActivity.FileList.currentDirectory == getSaveLocation(context)
 }
 
-fun getCurrentLinePoint(editText: EditText): Point {
+fun getCurrentLinePosition(editText: EditText): Array<Int> {
     val selectionStart = Selection.getSelectionStart(editText.text)
     val layout = editText.layout
 
@@ -87,7 +87,7 @@ fun getCurrentLinePoint(editText: EditText): Point {
         val lineNumber = layout.getLineForOffset(selectionStart)
         val lineStart = layout.getLineStart(lineNumber)
         val lineEnd = layout.getLineEnd(lineNumber)
-        Point(lineStart, lineEnd)
-    } else Point(-1, -1)
+        arrayOf(lineStart, lineEnd)
+    } else arrayOf(-1, -1)
 
 }

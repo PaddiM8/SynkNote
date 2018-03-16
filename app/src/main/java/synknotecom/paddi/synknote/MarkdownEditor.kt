@@ -2,30 +2,26 @@ package synknotecom.paddi.synknote
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableStringBuilder
 import android.text.TextWatcher
-import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
 import android.util.Log
-import android.view.*
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import com.onegravity.rteditor.effects.Effect
-import com.onegravity.rteditor.effects.Effects
-import kotlinx.android.synthetic.main.activity_editor.*
-import ru.noties.markwon.Markwon
-import java.lang.Math.floor
 import com.onegravity.rteditor.RTManager
+import com.onegravity.rteditor.api.RTApi
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
-import com.onegravity.rteditor.api.RTApi
-import org.apache.commons.lang.StringUtils
+import com.onegravity.rteditor.effects.Effects.ALL_EFFECTS
+import kotlinx.android.synthetic.main.activity_editor.*
+import org.apache.commons.lang.StringUtils.ordinalIndexOf
+import ru.noties.markwon.Markwon
 
 
 class MarkdownEditor : AppCompatActivity() {
@@ -54,6 +50,7 @@ class MarkdownEditor : AppCompatActivity() {
 
         title = intent.getStringExtra("title")
         markdown_editor.setText(intent.getStringExtra("content"))
+        styleMarkdown(0, markdown_editor.text.length - 1)
 
         markdown_editor.setOnClickListener {
             if (markdown_editor.hasFocus())
@@ -68,46 +65,21 @@ class MarkdownEditor : AppCompatActivity() {
         }
 
         markdown_editor.addTextChangedListener(object:TextWatcher {
+            var linePointBeforeChange: Array<Int> = emptyArray()
             override fun afterTextChanged(p0: Editable?) {
 
             }
 
-            var lastCount = 0
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
+            override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {
+                linePointBeforeChange = getCurrentLinePosition(markdown_editor)
             }
 
-            var lastCounts = arrayOf(0, 0, 0, 0)
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val types = arrayOf("<br>", "<u>", "<i>", "<i>")
-                val styleSpans: Array<Effect<Boolean, *>> = arrayOf(
-                        Effects.BOLD,
-                        Effects.UNDERLINE,
-                        Effects.ITALIC,
-                        Effects.ITALIC
-                )
-
-                val inputCopy = p0.toString().replace("**", "<br>")
-                                             .replace("__", "<u>")
-                                             .replace("*", "<i>")
-                                             .replace("_", "<i>")
-                var spannableString = SpannableStringBuilder(markdown_editor.text.toString())
-                val selection = markdown_editor.selectionStart
-                //val occurrences = getOccurrenceAmount(inputCopy, types)
-
-                for ((index, type) in types.withIndex()) {
-                    val occurrences = getOccurrenceAmount(inputCopy, type)
-                    Log.d("occurrences", occurrences.toString() + ", " + inputCopy)
-                    if (occurrences != lastCounts[index]) {
-                        lastCounts[index] = occurrences
-                        spannableString = findMarkdown(spannableString, inputCopy, type, styleSpans[index])
-                    }
-                }
-
-                /*if (occurrences != lastCount) {
-                    markdown_editor.text = spannableString
-                    markdown_editor.setSelection(selection)
-                }*/
+            override fun onTextChanged(p0: CharSequence?, start: Int, before: Int, count: Int) {
+                val currentLinePoint = getCurrentLinePosition(markdown_editor)
+                if (p0!!.count() == 1)
+                    styleMarkdown(currentLinePoint[0], currentLinePoint[1])
+                else if (p0.count() > 1)
+                    styleMarkdown(linePointBeforeChange[0], start + count)
             }
         })
 
@@ -138,89 +110,79 @@ class MarkdownEditor : AppCompatActivity() {
         onBack()
     }
 
-    private fun findMarkdown(original: SpannableStringBuilder, copy: String, type: String, effect: Effect<*, *>): SpannableStringBuilder {
-        val output = SpannableStringBuilder(original)
-        val occurrenceAmount = getOccurrenceAmount(copy, type)
-
-        var i = 1
-        while (i < occurrenceAmount && occurrenceAmount % 2 == 0) {
-            val actualTypeLength = getActualType(type).length
-            val index1 = StringUtils.ordinalIndexOf(copy, type, i) - (i - 1)
-            val index2 = StringUtils.ordinalIndexOf(copy, type, i + 1) - type.length //copy.indexOf(type, index1) - actualTypeLength
-            val lastCursorPosition = markdown_editor.selectionStart
-            Log.d("Yes", StringUtils.ordinalIndexOf(copy, type, i).toString() + ", " + i.toString())
-            markdown_editor.setSelection(index1, index2)
-            markdown_editor.applyEffect(Effects.BOLD, true)
-            markdown_editor.setSelection(index2)
-            markdown_editor.applyEffect(Effects.BOLD, false)
-            markdown_editor.setSelection(lastCursorPosition)
-            i += 2
-        }
-
-        return output
-    }
-
-    private fun getActualType(type: String): String {
-        return when (type) {
-            "<br>" -> "**"
-            "<u>" -> "__"
-            "<i>" -> "_"
-            else -> type
-        }
-    }
-
-    private fun getOccurrenceAmount(input: String, match: String): Int {
-        return input.split(match).count() - 1
-    }
-
-    private fun getOccurrenceAmount(input: String, matches: Array<String>): Int {
-        var totalValue = 0
-        for (match in matches)
-            totalValue += input.split(match).count() - 1
-
-        return totalValue
-    }
-
-    private fun styleString(input: SpannableStringBuilder, start: Int, end: Int, styleSpan: Any): SpannableStringBuilder {
-        input.setSpan(styleSpan, start, end, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        return input
-    }
-
-    /*private fun styleString(input: SpannableStringBuilder, findIn: String, selectionPoint: Point,
-                            pattern: String, styleType: String): SpannableStringBuilder {
-        // Find and mark
-        val italicMatches = Regex(pattern)
-                .findAll(findIn)
-        for (match in italicMatches) {
-            // Style selection
-            input.setSpan(getStyleSpanFromString(styleType),
-                    selectionPoint.x + match.range.first,
-                    selectionPoint.x + match.range.last,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-            // Gray out * and _ and such
-            if (styleType == "italic" || styleType == "bold" || styleType == "underline") {
-                input.setSpan(ForegroundColorSpan(0xd1dd23),
-                        selectionPoint.x + match.range.first,
-                        selectionPoint.x + match.range.first + 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                input.setSpan(ForegroundColorSpan(0xd1dd23),
-                        selectionPoint.x + match.range.last,
-                        selectionPoint.x + match.range.last + 1,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    fun styleMarkdown(start: Int, end: Int) {
+        val markdown = markdown_editor.text.substring(start, end)
+        val lexData = lexMarkdown(markdown) // Current line
+        for ((typeIndex, modifier) in lexData.withIndex()) {
+            var i = 0
+            while (i + 1 < modifier.count()) {
+                val index1 = start + modifier[i] + getType(typeIndex).length
+                val index2 = start + modifier[i + 1]
+                makeSelection(index1, index2, typeIndex)
+                i += 2
             }
         }
 
-        return input
-    }*/
+        // Headings
 
-    private inline fun <reified T> getStyleSpanFromString(style: String): T {
-        return when (style) {
-            "italic" -> StyleSpan(Typeface.ITALIC) as T
-            "bold" -> StyleSpan(Typeface.BOLD) as T
-            "underline" -> UnderlineSpan() as T
-            else -> StyleSpan(Typeface.NORMAL) as T
+        when {
+            markdown.startsWith("# ")   -> makeSelection(start, end, 4)
+            markdown.startsWith("## ")  -> makeSelection(start, end, 5)
+            markdown.startsWith("### ") -> makeSelection(start, end, 6)
+        }
+    }
+
+    private fun makeSelection(index1: Int, index2: Int, typeIndex: Int) {
+        val cursorPosition = markdown_editor.selectionEnd
+        val effectIndex = typeIndexToEffectIndex(typeIndex)
+        val effectValues: List<*> = getEffectValues(typeIndex)
+
+        // Set style to text inside modifiers
+        markdown_editor.setSelection(index1, index2)
+        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[0])
+
+        // Gray out modifiers
+        val typeLength = getType(typeIndex).length
+        if (typeIndex < 4) {
+            markdown_editor.setSelection(index1 - typeLength, index1)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
+            markdown_editor.setSelection(index2, index2 + typeLength)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
+            markdown_editor.setSelection(index2 + typeLength)
+
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.BLACK)
+            markdown_editor.setSelection(index1)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.BLACK)
+            markdown_editor.setSelection(cursorPosition)
+        } else {
+            markdown_editor.setSelection(index1, index1 + typeLength)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
+
+            markdown_editor.setSelection(index1 + typeLength)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.BLACK)
+            markdown_editor.setSelection(cursorPosition)
+        }
+
+        // Reset surroundings
+        markdown_editor.setSelection(index2)
+        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[1])
+    }
+
+    private fun typeIndexToEffectIndex(typeIndex: Int): Int {
+        return arrayOf(0, 2, 1, 1, 6, 6, 6)[typeIndex]
+    }
+
+    private fun getType(typeIndex: Int): String {
+        return arrayOf("**", "__", "*", "_", "#", "##", "###")[typeIndex]
+    }
+
+    private inline fun <reified T> getEffectValues(typeIndex: Int): T {
+        return when (typeIndex) {
+            0, 1, 2, 3 -> listOf(true, false) as T
+            4 -> listOf(90, 24) as T
+            5 -> listOf(75, 24) as T
+            6 -> listOf(65, 24) as T
+            else -> listOf(true, false) as T
         }
     }
 

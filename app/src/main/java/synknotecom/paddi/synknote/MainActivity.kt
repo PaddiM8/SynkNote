@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                     .putString("localFolderEditText", applicationInfo.dataDir + "/files/").apply()
         else if (!localFolderTextInput.endsWith("/"))
             getDefaultPref(this).edit()
-                .putString("localFolderEditText", localFolderTextInput + "/").apply()
+                .putString("localFolderEditText", "$localFolderTextInput/").apply()
 
         // Load currentDirectory
         if (FileList.currentDirectory == "")
