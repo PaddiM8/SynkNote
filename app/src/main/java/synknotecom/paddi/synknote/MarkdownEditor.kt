@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Debug
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -27,6 +28,8 @@ import ru.noties.markwon.Markwon
 
 
 class MarkdownEditor : AppCompatActivity() {
+
+    private var editedSinceLastSave = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Set theme
@@ -62,6 +65,7 @@ class MarkdownEditor : AppCompatActivity() {
 
         setOnFocusChangeListener()
         addTextChangedListener()
+        autoSave() // Start the auto-save loop
 
         // Layout changed, highlight markdown
          var justCreated = true
@@ -87,6 +91,22 @@ class MarkdownEditor : AppCompatActivity() {
         editorTabs.addTab(spec2)
     }
 
+    private fun autoSave() {
+        val handler = Handler()
+        val delay = 5000L //milliseconds
+
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (editedSinceLastSave) {
+                    saveDocument(applicationContext, intent.getStringExtra("filename"), markdown_editor)
+                    editedSinceLastSave = false
+                }
+
+                handler.postDelayed(this, delay)
+            }
+        }, delay)
+    }
+
     private fun addTextChangedListener() {
         markdown_editor.addTextChangedListener(object:TextWatcher {
             var linePointBeforeChange: Array<Int> = emptyArray()
@@ -101,6 +121,8 @@ class MarkdownEditor : AppCompatActivity() {
             }
 
             override fun onTextChanged(p0: CharSequence?, start: Int, before: Int, count: Int) {
+                editedSinceLastSave = true
+
                 val currentLinePoint = getCurrentLinePosition(markdown_editor)
                 if (p0!!.count() == 1 || markdown_editor.text.length >= currentLinePoint[1])
                     styleMarkdown(currentLinePoint[0], currentLinePoint[1])
@@ -195,39 +217,21 @@ class MarkdownEditor : AppCompatActivity() {
 
         // Gray out modifiers
         val typeLength = getType(typeIndex).length
-        if (typeIndex < 4 && hasStyle) {
-            markdown_editor.setSelection(index1 - typeLength, index1)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
-            markdown_editor.setSelection(index2, index2 + typeLength)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
-            markdown_editor.setSelection(index2 + typeLength)
-
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
-            markdown_editor.setSelection(index1)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
-        } else if (hasStyle) {
-            markdown_editor.setSelection(index1, index1 + typeLength)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
-
-            markdown_editor.setSelection(index1 + typeLength)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
+        if (typeIndex < 4 && hasStyle) { // Normal modifiers
+            markdown_editor.setSelection(index1 - typeLength, index2 + typeLength)          // Select entire thing
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6D3D3D3"))  // Color it
+            markdown_editor.setSelection(index1, index2)                                              // Select inside (without modifiers)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)                               // Color it back to normal color
+        } else if (hasStyle) { // Headings
+            markdown_editor.setSelection(index1, index1 + typeLength)                            // Select pound signs
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6D3D3D3"))  // Color them
+            markdown_editor.setSelection(index1 + typeLength)                                         // Select after pound signs
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)                               // Set to normal color
         }
 
         // Reset surroundings
         markdown_editor.setSelection(index2)
         ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[1])
-        markdown_editor.setSelection(cursorPosition)
-    }
-
-    private fun resetHeading(start: Int, end: Int) {
-        val cursorPosition = markdown_editor.selectionStart
-
-        // Set style to text inside modifiers
-        markdown_editor.setSelection(start, end)
-        ALL_EFFECTS[6].applyToSelection(markdown_editor, 54)
-
-        // Reset surroundings
-        markdown_editor.setSelection(end)
         markdown_editor.setSelection(cursorPosition)
     }
 
@@ -268,7 +272,6 @@ class MarkdownEditor : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         saveDocument(applicationContext, intent.getStringExtra("filename"), markdown_editor)
-        Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }
 
 }

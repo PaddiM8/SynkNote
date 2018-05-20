@@ -27,10 +27,14 @@ fun initializeItemTouchHelper(view: View): ItemTouchHelper.SimpleCallback {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val itemId = viewHolder.adapterPosition
 
-            if (direction == ItemTouchHelper.LEFT)
-                deleteDocument(itemId)
-            else if (direction == ItemTouchHelper.RIGHT)
+            if (direction == ItemTouchHelper.LEFT) {
+                if (MainActivity.FileList.files[itemId].isFile)
+                    deleteDocument(itemId)
+                else
+                    deleteFolder(itemId)
+            } else if (direction == ItemTouchHelper.RIGHT) {
                 showRenameDialog(itemId, view)
+            }
 
             MainActivity.FileList.adapter.notifyDataSetChanged()
         }

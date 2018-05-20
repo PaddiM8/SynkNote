@@ -2,11 +2,15 @@ package synknotecom.paddi.synknote
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import org.apache.commons.lang.StringUtils
 import org.jasypt.util.text.BasicTextEncryptor
 import java.io.File
+import java.nio.file.Files.isDirectory
+
+
 
 
 /**
@@ -75,13 +79,19 @@ fun renameDocument(id: Int, newName: String) {
     MainActivity.FileList.files[id] = newFile
 }
 
+fun deleteFolder(id: Int) {
+    val folder = MainActivity.FileList.files[id]
+    folder.deleteRecursively()
+    MainActivity.FileList.adapter.removeItem(id)
+}
+
 fun encryptString(input: String, key: String): String {
-    return try {
+     return try {
         val textEncryptor = BasicTextEncryptor()
         textEncryptor.setPassword(key)
         textEncryptor.encrypt(input)
     } catch (e: Exception) {
-        input
+        ""
     }
 }
 

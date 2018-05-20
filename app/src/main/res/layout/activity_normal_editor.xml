@@ -12,8 +12,9 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:ems="10"
+        android:fontFamily="@font/droid_serif"
         android:gravity="top|start"
         android:inputType="textMultiLine"
-        android:typeface="serif"
-        android:padding="5dp" />
+        android:padding="5dp"
+        android:typeface="serif" />
 </RelativeLayout>

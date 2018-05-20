@@ -22,8 +22,7 @@ import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.view.KeyEvent.KEYCODE_BACK
-
-
+import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 
 
 @Suppress("JAVA_CLASS_ON_COMPANION")

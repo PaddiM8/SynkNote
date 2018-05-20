@@ -45,7 +45,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@android:color/transparent"
-                        android:fontFamily="sans-serif"
+                        android:fontFamily="@font/droid_serif"
                         android:gravity="top"
                         android:inputType="textMultiLine"
                         android:paddingBottom="15dp"
@@ -74,14 +74,16 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="top"
                         android:background="@android:color/transparent"
+                        android:fontFamily="@font/droid_serif"
                         android:gravity="top"
                         android:inputType="none"
                         android:paddingBottom="15dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
+                        android:paddingTop="15dp"
+                        android:textColor="?attr/textColorEditor"
                         android:textIsSelectable="true"
                         android:typeface="serif"
-                        android:textColor="?attr/textColorEditor"
                         tools:ignore="LabelFor" />
 
                 </LinearLayout>

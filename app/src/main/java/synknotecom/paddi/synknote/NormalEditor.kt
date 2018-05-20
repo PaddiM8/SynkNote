@@ -4,14 +4,20 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_editor.*
 import kotlinx.android.synthetic.main.activity_normal_editor.*
 
 class NormalEditor : AppCompatActivity() {
+
+    private var editedSinceLastSave = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (PreferenceManager.getDefaultSharedPreferences(this)
@@ -25,11 +31,43 @@ class NormalEditor : AppCompatActivity() {
 
         title = intent.getStringExtra("title")
         normal_text_editor.setText(intent.getStringExtra("content"))
+        autoSave()
 
         normal_text_editor.setOnClickListener {
             if (normal_text_editor.hasFocus())
                 showSoftwareKeyboard(true)
         }
+
+        normal_text_editor.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                editedSinceLastSave = true
+            }
+        })
+
+    }
+
+    private fun autoSave() {
+        val handler = Handler()
+        val delay = 5000L //  Milliseconds
+
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                if (editedSinceLastSave) {
+                    saveDocument(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
+                    editedSinceLastSave = false
+                }
+
+                handler.postDelayed(this, delay)
+            }
+        }, delay)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {

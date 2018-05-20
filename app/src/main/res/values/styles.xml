@@ -8,6 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="recyclerViewItem">@color/colorBackgroundLight</item>
         <item name="separatorLineColor">@color/separatorLineColorLight</item>
+        <item name="moreButton">@drawable/ic_more_light</item>
+        <item name="fileIcon">@drawable/ic_file</item>
+        <item name="folderIcon">@drawable/ic_folder</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
@@ -22,6 +25,9 @@
         <item name="windowNoTitle">true</item>
         <item name="android:colorForeground">@color/colorBackgroundDark</item>
         <item name="separatorLineColor">@color/separatorLineColorDark</item>
+        <item name="moreButton">@drawable/ic_more_dark</item>
+        <item name="fileIcon">@drawable/ic_file_dark</item>
+        <item name="folderIcon">@drawable/ic_folder_dark</item>
     </style>
 
     <style name="AppTheme.General" parent="AppTheme">

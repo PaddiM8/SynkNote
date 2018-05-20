@@ -101,4 +101,7 @@
     <string name="password">Password…</string>
     <string name="local_folder">Local Folder</string>
     <string name="encrypt_files">Encrypt Files</string>
+    <string name="rename">Rename</string>
+    <string name="pin">Pin</string>
+    <string name="Delete">Delete</string>
 </resources>

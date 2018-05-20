@@ -4,4 +4,7 @@
     <attr name="tabHostBackground" format="reference" />
     <attr name="textColorEditor" format="reference" />
     <attr name="separatorLineColor" format="reference" />
+    <attr name="moreButton" format="reference" />
+    <attr name="fileIcon" format="reference" />
+    <attr name="folderIcon" format="reference" />
 </resources>

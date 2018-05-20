@@ -37,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
         OnStart.localFolderLocation = getDefaultPref(this)
                                         .getString("localFolderEditText", null)
 
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener { sharedPreferences: SharedPreferences, tag: String ->
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener { _: SharedPreferences, tag: String ->
             when (tag) {
                 "darkThemeSettingsCheckbox" -> this.recreate()
                 /*"passwordLockEditText" -> {
