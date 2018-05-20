@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Debug
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -18,6 +19,7 @@ import com.onegravity.rteditor.RTManager
 import com.onegravity.rteditor.api.RTApi
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
+import com.onegravity.rteditor.effects.Effects
 import com.onegravity.rteditor.effects.Effects.ALL_EFFECTS
 import kotlinx.android.synthetic.main.activity_editor.*
 import org.apache.commons.lang.StringUtils.ordinalIndexOf
@@ -27,6 +29,7 @@ import ru.noties.markwon.Markwon
 class MarkdownEditor : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Set theme
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("darkThemeSettingsCheckbox", false))
             setTheme(R.style.AppTheme_Dark_General)
         else
@@ -36,6 +39,7 @@ class MarkdownEditor : AppCompatActivity() {
         setContentView(R.layout.activity_editor)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
+        // Back button
         val actionBar = supportActionBar
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true)
@@ -45,41 +49,26 @@ class MarkdownEditor : AppCompatActivity() {
         // Create RTManager
         val rtApi = RTApi(this, RTProxyImpl(this), RTMediaFactoryImpl(this, true))
         val rtManager = RTManager(rtApi, savedInstanceState)
-
         rtManager.registerEditor(markdown_editor, true)
 
+        // Fill document
         title = intent.getStringExtra("title")
         markdown_editor.setText(intent.getStringExtra("content"))
-        styleMarkdown(0, markdown_editor.text.length - 1)
 
         markdown_editor.setOnClickListener {
             if (markdown_editor.hasFocus())
                 showSoftwareKeyboard(true)
         }
 
-        text_editor.setOnFocusChangeListener { view: View, _: Boolean ->
-            if (text_editor.hasFocus()) {
-                Markwon.setMarkdown(text_editor, markdown_editor.text.toString())
-                showSoftwareKeyboard(false, view)
-            }
-        }
+        setOnFocusChangeListener()
+        addTextChangedListener()
 
-        markdown_editor.addTextChangedListener(object:TextWatcher {
-            var linePointBeforeChange: Array<Int> = emptyArray()
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {
-                linePointBeforeChange = getCurrentLinePosition(markdown_editor)
-            }
-
-            override fun onTextChanged(p0: CharSequence?, start: Int, before: Int, count: Int) {
-                val currentLinePoint = getCurrentLinePosition(markdown_editor)
-                if (p0!!.count() == 1)
-                    styleMarkdown(currentLinePoint[0], currentLinePoint[1])
-                else if (p0.count() > 1)
-                    styleMarkdown(linePointBeforeChange[0], start + count)
+        // Layout changed, highlight markdown
+         var justCreated = true
+        markdown_editor.addOnLayoutChangeListener({ _: View, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
+            if (justCreated) {
+                layoutChanged()
+                justCreated = false
             }
         })
 
@@ -98,6 +87,38 @@ class MarkdownEditor : AppCompatActivity() {
         editorTabs.addTab(spec2)
     }
 
+    private fun addTextChangedListener() {
+        markdown_editor.addTextChangedListener(object:TextWatcher {
+            var linePointBeforeChange: Array<Int> = emptyArray()
+            var lastCharSequenceLength = 0
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, start: Int, count: Int, after: Int) {
+                linePointBeforeChange = getCurrentLinePosition(markdown_editor)
+                lastCharSequenceLength = p0!!.count()
+            }
+
+            override fun onTextChanged(p0: CharSequence?, start: Int, before: Int, count: Int) {
+                val currentLinePoint = getCurrentLinePosition(markdown_editor)
+                if (p0!!.count() == 1 || markdown_editor.text.length >= currentLinePoint[1])
+                    styleMarkdown(currentLinePoint[0], currentLinePoint[1])
+                else if (p0.count() > 1 && lastCharSequenceLength < p0.count())
+                    styleMarkdown(linePointBeforeChange[0], start + count)
+            }
+        })
+    }
+
+    private fun setOnFocusChangeListener() {
+        text_editor.setOnFocusChangeListener { view: View, _: Boolean ->
+            if (text_editor.hasFocus()) {
+                Markwon.setMarkdown(text_editor, markdown_editor.text.toString())
+                showSoftwareKeyboard(false, view)
+            }
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem) : Boolean {
         super.onOptionsItemSelected(item)
         if (item.itemId == android.R.id.home)
@@ -110,62 +131,104 @@ class MarkdownEditor : AppCompatActivity() {
         onBack()
     }
 
+    private fun layoutChanged() {
+        // Highlight Markdown
+        if (markdown_editor.text.isNotEmpty()) {
+            val layout = markdown_editor.layout
+            for ((index, _) in markdown_editor.text.lines().withIndex()) {
+                val lineStart = layout.getLineStart(index)
+                val lineEnd = layout.getLineEnd(index)
+                styleMarkdown(lineStart, lineEnd)
+            }
+        }
+    }
+
     fun styleMarkdown(start: Int, end: Int) {
-        val markdown = markdown_editor.text.substring(start, end)
+        var markdown = ""
+
+        if (start in 0..(end - 1))
+            markdown = markdown_editor.text.substring(start, end)
+
         val lexData = lexMarkdown(markdown) // Current line
         for ((typeIndex, modifier) in lexData.withIndex()) {
             var i = 0
             while (i + 1 < modifier.count()) {
                 val index1 = start + modifier[i] + getType(typeIndex).length
                 val index2 = start + modifier[i + 1]
-                makeSelection(index1, index2, typeIndex)
+                makeSelection(index1, index2, typeIndex, true)
+
                 i += 2
             }
+
+            if (modifier.count() % 2 != 0)
+                makeSelection(start, end, typeIndex,false)
         }
+
 
         // Headings
-
+        var typeIndex = 0
         when {
-            markdown.startsWith("# ")   -> makeSelection(start, end, 4)
-            markdown.startsWith("## ")  -> makeSelection(start, end, 5)
-            markdown.startsWith("### ") -> makeSelection(start, end, 6)
+            markdown.startsWith("# ")   -> typeIndex = 4
+            markdown.startsWith("## ")  -> typeIndex = 5
+            markdown.startsWith("### ") -> typeIndex = 6
         }
+
+        if (typeIndex >= 4)
+            makeSelection(start, end, typeIndex, true)
+        else
+            makeSelection(start, end, 6, false)
     }
 
-    private fun makeSelection(index1: Int, index2: Int, typeIndex: Int) {
+    private fun makeSelection(index1: Int, index2: Int, typeIndex: Int, hasStyle: Boolean) {
         val cursorPosition = markdown_editor.selectionEnd
         val effectIndex = typeIndexToEffectIndex(typeIndex)
         val effectValues: List<*> = getEffectValues(typeIndex)
+        val hasStyleInt = hasStyle.toInt().binaryInvert()
+        var textColor = Color.BLACK
+
+        if (getDefaultPref(this).getBoolean("darkThemeSettingsCheckbox", false))
+            textColor = Color.WHITE
 
         // Set style to text inside modifiers
         markdown_editor.setSelection(index1, index2)
-        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[0])
+        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[hasStyleInt])
 
         // Gray out modifiers
         val typeLength = getType(typeIndex).length
-        if (typeIndex < 4) {
+        if (typeIndex < 4 && hasStyle) {
             markdown_editor.setSelection(index1 - typeLength, index1)
             ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
             markdown_editor.setSelection(index2, index2 + typeLength)
             ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
             markdown_editor.setSelection(index2 + typeLength)
 
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.BLACK)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
             markdown_editor.setSelection(index1)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.BLACK)
-            markdown_editor.setSelection(cursorPosition)
-        } else {
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
+        } else if (hasStyle) {
             markdown_editor.setSelection(index1, index1 + typeLength)
             ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6000000"))
 
             markdown_editor.setSelection(index1 + typeLength)
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.BLACK)
-            markdown_editor.setSelection(cursorPosition)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
         }
 
         // Reset surroundings
         markdown_editor.setSelection(index2)
         ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[1])
+        markdown_editor.setSelection(cursorPosition)
+    }
+
+    private fun resetHeading(start: Int, end: Int) {
+        val cursorPosition = markdown_editor.selectionStart
+
+        // Set style to text inside modifiers
+        markdown_editor.setSelection(start, end)
+        ALL_EFFECTS[6].applyToSelection(markdown_editor, 54)
+
+        // Reset surroundings
+        markdown_editor.setSelection(end)
+        markdown_editor.setSelection(cursorPosition)
     }
 
     private fun typeIndexToEffectIndex(typeIndex: Int): Int {
@@ -179,9 +242,9 @@ class MarkdownEditor : AppCompatActivity() {
     private inline fun <reified T> getEffectValues(typeIndex: Int): T {
         return when (typeIndex) {
             0, 1, 2, 3 -> listOf(true, false) as T
-            4 -> listOf(90, 24) as T
-            5 -> listOf(75, 24) as T
-            6 -> listOf(65, 24) as T
+            4 -> listOf(90, 54) as T
+            5 -> listOf(75, 54) as T
+            6 -> listOf(65, 54) as T
             else -> listOf(true, false) as T
         }
     }

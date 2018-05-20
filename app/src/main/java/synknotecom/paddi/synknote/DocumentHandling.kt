@@ -2,16 +2,11 @@ package synknotecom.paddi.synknote
 
 import android.content.Context
 import android.content.Intent
-import android.preference.PreferenceManager
-import android.util.Log
 import android.view.View
 import android.widget.EditText
-import kotlinx.android.synthetic.main.activity_main_window.*
 import org.apache.commons.lang.StringUtils
 import org.jasypt.util.text.BasicTextEncryptor
-import synknotecom.paddi.synknote.R.id.recycler_view
 import java.io.File
-import java.util.*
 
 
 /**
@@ -73,7 +68,7 @@ fun deleteDocument(id: Int) {
     MainActivity.FileList.adapter.removeItem(id)
 }
 
-fun renameDocument(id: Int, newName: String, view: View) {
+fun renameDocument(id: Int, newName: String) {
     val documentFile = MainActivity.FileList.files[id]
     val newFile = File(MainActivity.FileList.currentDirectory + newName + "." + documentFile.extension)
     documentFile.renameTo(newFile)
@@ -96,16 +91,17 @@ fun decryptString(input: String, key: String): String {
         textEncryptor.setPassword(key)
         return textEncryptor.decrypt(input)
     } catch (e: Exception) {
-        input
+        e.toString()
     }
+}
+
+fun documentExists(documentName: String) : Boolean {
+    val fileLocation = MainActivity.FileList.currentDirectory + documentName
+    return File(fileLocation).exists()
 }
 
 fun getSaveLocation(context: Context): String {
     return getDefaultPref(context).getString("localFolderEditText", null)
-}
-
-fun fileExists(fileName: String): Boolean {
-    return false
 }
 
 fun isValidFileName(fileName: String): Boolean {

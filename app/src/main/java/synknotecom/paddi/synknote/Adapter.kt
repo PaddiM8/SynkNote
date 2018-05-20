@@ -41,11 +41,20 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindItems(file: File) {
+            var fileIcon = R.drawable.ic_file
+            var folderIcon = R.drawable.ic_folder
+            if (getDefaultPref(itemView.context).getBoolean("darkThemeSettingsCheckbox", false)) {
+                fileIcon = R.drawable.ic_file_dark
+                folderIcon = R.drawable.ic_folder_dark
+            }
+
             // Icon
             if (file.isFile)
-                itemView.image_view_document_icon.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_file))
+                itemView.image_view_document_icon
+                        .setImageDrawable(ContextCompat.getDrawable(itemView.context, fileIcon))
             else
-                itemView.image_view_document_icon.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_folder))
+                itemView.image_view_document_icon
+                        .setImageDrawable(ContextCompat.getDrawable(itemView.context, folderIcon))
 
             itemView.text_view_document_title.text = file.nameWithoutExtension
             itemView.text_view_date.text = getDate(file.lastModified(), "dd/MM")

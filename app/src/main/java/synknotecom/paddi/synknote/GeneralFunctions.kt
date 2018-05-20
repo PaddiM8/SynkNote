@@ -89,5 +89,4 @@ fun getCurrentLinePosition(editText: EditText): Array<Int> {
         val lineEnd = layout.getLineEnd(lineNumber)
         arrayOf(lineStart, lineEnd)
     } else arrayOf(-1, -1)
-
 }

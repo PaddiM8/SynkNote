@@ -16,6 +16,6 @@
     <color name="colorBackgroundDark">#000000</color>
     <color name="textColorEditorLight">#000000</color>
     <color name="textColorEditorDark">#FFFFFF</color>
-    <color name="listItemColorDark">#303030</color>
+    <color name="listItemColorDark">#212121</color>
     <color name="separatorLineColorDark">#757575</color>
 </resources>

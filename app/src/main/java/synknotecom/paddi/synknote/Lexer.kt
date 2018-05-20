@@ -36,9 +36,12 @@ fun lexMarkdown(input: String): List<List<Int>> {
     return findings
 }
 
-fun Char.isModifier(): Boolean {
-    return arrayOf('*', '_').any { this == it }
-}
+//fun Char.isModifier(): Boolean {
+    //return arrayOf('*', '_').any { this == it }
+//}
+
+fun Char.isModifier(): Boolean =
+    this == '*' || this == '_'
 
 fun modifierToIndex(modifier: String): Int {
     return when (modifier) {

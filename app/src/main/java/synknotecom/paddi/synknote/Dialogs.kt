@@ -8,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-import kotlinx.android.synthetic.main.new_document_dialog.*
 import kotlinx.android.synthetic.main.rename_dialog.*
-import synknotecom.paddi.synknote.R.id.rename_document_input
 import java.io.File
 
 /**
@@ -55,10 +53,10 @@ fun showRenameDialog(documentId: Int, view: View) {
 
         // Validation
         when {
-            fileExists(input) -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
+            documentExists(input) -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
             input.isEmpty() -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
             !isValidFileName(input) -> Toast.makeText(view.context, "File name contains illegal characters!", Toast.LENGTH_LONG).show()
-            else -> renameDocument(documentId, input, view)
+            else -> renameDocument(documentId, input)
         }
 
         MainActivity.FileList.files[documentId] = File(MainActivity.FileList.currentDirectory + "/" + input + "." + fileExtension)

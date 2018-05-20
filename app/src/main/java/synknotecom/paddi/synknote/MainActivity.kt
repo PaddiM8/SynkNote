@@ -59,18 +59,22 @@ class MainActivity : AppCompatActivity() {
         promptPermissions()
 
         // Make sure localFolderPath is correct
-        val localFolderTextInput = getDefaultPref(this).getString("localFolderEditText", null)
-        if (localFolderTextInput == null)
+        val localFolderTextInput = getDefaultPref(this)
+                .getString("localFolderEditText", null)
+
+        if (localFolderTextInput == null) {
             getDefaultPref(this).edit()
                     .putString("localFolderEditText", applicationInfo.dataDir + "/files/").apply()
-        else if (!localFolderTextInput.endsWith("/"))
+        } else if (!localFolderTextInput.endsWith("/")) {
             getDefaultPref(this).edit()
-                .putString("localFolderEditText", "$localFolderTextInput/").apply()
+                    .putString("localFolderEditText", "$localFolderTextInput/").apply()
+        }
 
         // Load currentDirectory
-        if (FileList.currentDirectory == "")
+        if (FileList.currentDirectory == "") {
             FileList.currentDirectory = getDefaultPref(this)
                     .getString("localFolderEditText", null)
+        }
 
         // Password Lock
         val passwordLockSettingEnabled = getDefaultPref(this)
@@ -131,8 +135,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun promptPermissions() {
         // Storage Permission not granted
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        }
     }
 
     private fun toggleKeyboard() {
@@ -174,14 +181,16 @@ class MainActivity : AppCompatActivity() {
             val pref = applicationContext.getSharedPreferences("DataPref", MODE_PRIVATE)
             val dialogInput = passwordDialog.password_input.text.toString()
 
-            if (PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray()) == pref.getString("password_hash", null)) {
-                passwordDialog.password_input.setText("")
-                passwordDialog.dismiss()
-                loadFileList()
-                loadDocuments()
-                toggleKeyboard()
+            if (dialogInput.isNotEmpty()) {
+                if (PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray()) == pref.getString("password_hash", null)) {
+                    passwordDialog.password_input.setText("")
+                    passwordDialog.dismiss()
+                    loadFileList()
+                    loadDocuments()
+                    toggleKeyboard()
 
-                Protection.encryptionKey = PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray())
+                    Protection.encryptionKey = PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray())
+                }
             }
         }
     }

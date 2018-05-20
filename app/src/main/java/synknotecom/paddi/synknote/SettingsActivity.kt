@@ -84,8 +84,11 @@ class SettingsActivity : AppCompatActivity() {
         if (files != null) {
             for (file in files) {
                 if (file.isFile) {
+                    Log.d("Decrypting", decryptString(file.readText(), oldKey))
+                    val lastModified = file.lastModified()
                     val decryptedFileContent = decryptString(file.readText(), oldKey) // Decrypt file with old key
                     file.writeText(encryptString(decryptedFileContent, newKey)) // Encrypt file with new key
+                    file.setLastModified(lastModified)
                 } else {
                     reencryptDocuments(file, oldKey, newKey)
                 }

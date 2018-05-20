@@ -21,3 +21,9 @@ fun <T: RecyclerView.ViewHolder> T.onClick(event: (position: Int, type: Int) -> 
 
     return this
 }
+
+fun Boolean.toInt() =
+        if (this) 1 else 0
+
+fun Int.binaryInvert() =
+        if (this == 0) 1 else 0
