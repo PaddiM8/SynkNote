@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote;
+package synknotecom.paddi.synknote.Algorithms;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;

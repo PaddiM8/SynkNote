@@ -5,17 +5,14 @@ import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
 import android.content.SharedPreferences
-import android.graphics.Point
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import org.apache.commons.lang.RandomStringUtils
 import android.text.Selection
-import android.util.Range
 import android.widget.EditText
-
-
+import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
 
 
 /**

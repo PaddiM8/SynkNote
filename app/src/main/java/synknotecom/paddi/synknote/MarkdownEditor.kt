@@ -4,26 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Debug
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import com.onegravity.rteditor.RTManager
 import com.onegravity.rteditor.api.RTApi
 import com.onegravity.rteditor.api.RTMediaFactoryImpl
 import com.onegravity.rteditor.api.RTProxyImpl
-import com.onegravity.rteditor.effects.Effects
 import com.onegravity.rteditor.effects.Effects.ALL_EFFECTS
 import kotlinx.android.synthetic.main.activity_editor.*
-import org.apache.commons.lang.StringUtils.ordinalIndexOf
 import ru.noties.markwon.Markwon
 
 
@@ -69,12 +64,12 @@ class MarkdownEditor : AppCompatActivity() {
 
         // Layout changed, highlight markdown
          var justCreated = true
-        markdown_editor.addOnLayoutChangeListener({ _: View, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
+        markdown_editor.addOnLayoutChangeListener { _: View, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
             if (justCreated) {
                 layoutChanged()
                 justCreated = false
             }
-        })
+        }
 
         editorTabs.setup()
 
@@ -171,7 +166,7 @@ class MarkdownEditor : AppCompatActivity() {
         if (start in 0..(end - 1))
             markdown = markdown_editor.text.substring(start, end)
 
-        val lexData = lexMarkdown(markdown) // Current line
+        val lexData = Lexer().lex(markdown) // Current line
         for ((typeIndex, modifier) in lexData.withIndex()) {
             var i = 0
             while (i + 1 < modifier.count()) {

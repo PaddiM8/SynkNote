@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote;
+package synknotecom.paddi.synknote.Algorithms;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;

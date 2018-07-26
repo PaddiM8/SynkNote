@@ -8,6 +8,7 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.MenuItem
+import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
 import java.io.File
 
 class SettingsActivity : AppCompatActivity() {

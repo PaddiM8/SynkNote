@@ -8,8 +8,8 @@ import android.view.*
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 import java.io.File
 import android.view.ContextMenu.ContextMenuInfo
-
-
+import synknotecom.paddi.synknote.Files.Document
+import synknotecom.paddi.synknote.Files.Folder
 
 
 /**
@@ -72,8 +72,8 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
                         R.id.renameButton -> showRenameDialog(itemId, itemView)
                         R.id.deleteButton -> {
                             if (fileList[itemId].isFile)
-                                deleteDocument(itemId)
-                            else deleteFolder(itemId)
+                                Document(itemId).delete()
+                            else Folder(itemId).delete()
                         }
                         R.id.pinButton -> Log.d("Pin", "pin!") // TODO: Ability to pin item
                     }

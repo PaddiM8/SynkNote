@@ -6,10 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main_window.*
@@ -17,12 +15,12 @@ import kotlinx.android.synthetic.main.new_document_dialog.*
 import java.io.File
 import java.util.*
 import kotlinx.android.synthetic.main.password_dialog.*
-import java.io.OutputStreamWriter
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
-import android.view.KeyEvent.KEYCODE_BACK
-import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
+import android.util.Log
+import synknotecom.paddi.synknote.Algorithms.BCrypt
+import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
 
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -85,8 +83,10 @@ class MainActivity : AppCompatActivity() {
             askForPassword()
         } else {
             // Set to default encryption key, if the user choose to not use password lock, the encryption key won't be protected locally.
-            if (!passwordLockSettingEnabled)
+            if (!passwordLockSettingEnabled) {
+                Log.d("I'm here", "nice...")
                 Protection.encryptionKey = getEncryptionKey()
+            }
             loadFileList()
             loadDocuments()
         }
