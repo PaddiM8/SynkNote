@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.password_dialog.*
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import synknotecom.paddi.synknote.Algorithms.BCrypt
 import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
 import synknotecom.paddi.synknote.Files.Document
@@ -90,16 +91,6 @@ class MainActivity : AppCompatActivity() {
             loadFileList()
             loadDocuments()
         }
-
-        // Back button
-        if (isInMainDirectory(this))
-            supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        else
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // Setup ItemTouchHelper
-        //val helper = ItemTouchHelper(initializeItemTouchHelper(window.decorView))
-        //helper.attachToRecyclerView(recycler_view)
 
         // Fab click event
         fab.setOnClickListener { fabOnClick() }
@@ -226,6 +217,7 @@ class MainActivity : AppCompatActivity() {
 
     fun loadFileList() {
         val directory = File(MainActivity.FileList.currentDirectory) // Directory from application root
+        supportActionBar?.setDisplayHomeAsUpEnabled(!isInMainDirectory(this))
 
         if (directory.exists()) {
             val files = directory.listFiles()
