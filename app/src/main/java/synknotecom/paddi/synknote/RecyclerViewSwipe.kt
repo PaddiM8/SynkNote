@@ -4,6 +4,8 @@ import android.graphics.*
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
+import synknotecom.paddi.synknote.Files.Document
+import synknotecom.paddi.synknote.Files.Folder
 
 /**
 * Created by PaddiM8 on 2/4/18.
@@ -29,9 +31,9 @@ fun initializeItemTouchHelper(view: View): ItemTouchHelper.SimpleCallback {
 
             if (direction == ItemTouchHelper.LEFT) {
                 if (MainActivity.FileList.files[itemId].isFile)
-                    deleteDocument(itemId)
+                    Document(itemId).delete()
                 else
-                    deleteFolder(itemId)
+                    Folder(itemId).delete()
             } else if (direction == ItemTouchHelper.RIGHT) {
                 showRenameDialog(itemId, view)
             }

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import kotlinx.android.synthetic.main.rename_dialog.*
+import synknotecom.paddi.synknote.Files.Document
 import java.io.File
 
 /**
@@ -37,8 +38,8 @@ fun createRenameDialog(context: Context): AlertDialog {
     dialogView.findViewById<EditText>(R.id.rename_document_input)
     dialog.setView(dialogView)
     dialog.setCancelable(true)
-    dialog.setPositiveButton("Create", { _: DialogInterface, _: Int -> })
-    dialog.setNegativeButton("Cancel", { _: DialogInterface, _: Int -> })
+    dialog.setPositiveButton("Create") { _: DialogInterface, _: Int -> }
+    dialog.setNegativeButton("Cancel") { _: DialogInterface, _: Int -> }
 
     return dialog.create()
 }
@@ -47,26 +48,28 @@ fun showRenameDialog(documentId: Int, view: View) {
     val renameDialog = createRenameDialog(view.context)
     renameDialog.show()
 
-    renameDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
+    renameDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
         val input = renameDialog.rename_document_input.text.toString()
         val fileExtension = MainActivity.FileList.files[documentId].extension
 
         // Validation
         when {
-            documentExists(input) -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
-            input.isEmpty() -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
-            !isValidFileName(input) -> Toast.makeText(view.context, "File name contains illegal characters!", Toast.LENGTH_LONG).show()
-            else -> renameDocument(documentId, input)
+            documentExists(input)   -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
+            input.isEmpty()         -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
+            !isValidFileName(input) -> Toast.makeText(view.context, "File name contains bad characters!", Toast.LENGTH_LONG).show()
+            else -> Document(documentId).rename(input, view)
         }
 
-        MainActivity.FileList.files[documentId] = File(MainActivity.FileList.currentDirectory + "/" + input + "." + fileExtension)
-        MainActivity.FileList.adapter.notifyDataSetChanged()
+        /*val file = File(MainActivity.FileList.currentDirectory + "/" + input + "." + fileExtension)
+        MainActivity.FileList.files[documentId] = file.renameTo
+        MainActivity.FileList.adapter.notifyDataSetChanged()*/
+        Document(documentId).rename("$input.$fileExtension", view)
         renameDialog.dismiss()
-    })
+    }
 
-    renameDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener({
+    renameDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
         renameDialog.dismiss()
-    })
+    }
 }
 
 @SuppressLint("InflateParams")

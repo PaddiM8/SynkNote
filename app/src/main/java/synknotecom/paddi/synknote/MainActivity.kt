@@ -18,9 +18,10 @@ import kotlinx.android.synthetic.main.password_dialog.*
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import synknotecom.paddi.synknote.Algorithms.BCrypt
 import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
+import synknotecom.paddi.synknote.Files.Document
+import synknotecom.paddi.synknote.Files.Folder
 
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -84,7 +85,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             // Set to default encryption key, if the user choose to not use password lock, the encryption key won't be protected locally.
             if (!passwordLockSettingEnabled) {
-                Log.d("I'm here", "nice...")
                 Protection.encryptionKey = getEncryptionKey()
             }
             loadFileList()
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity() {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Setup ItemTouchHelper
-        val helper = ItemTouchHelper(initializeItemTouchHelper(window.decorView))
-        helper.attachToRecyclerView(recycler_view)
+        //val helper = ItemTouchHelper(initializeItemTouchHelper(window.decorView))
+        //helper.attachToRecyclerView(recycler_view)
 
         // Fab click event
         fab.setOnClickListener { fabOnClick() }
@@ -200,23 +200,23 @@ class MainActivity : AppCompatActivity() {
         showSoftwareKeyboard(true, newDocumentDialog.document_name_input)
 
         // New document dialog on buttonCreate click
-        newDocumentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
+        newDocumentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
             val documentType = newDocumentDialog.spinner.selectedItem.toString()
             val documentName = newDocumentDialog.document_name_input.text.toString()
 
             if (documentType == "Folder")
-                createFolder(documentName)
+                Folder().create(documentName)
             else
-                createDocument(documentName, documentType, window.decorView)
+                Document().create(documentName, documentType, window.decorView)
 
             newDocumentDialog.document_name_input.text.clear()
             newDocumentDialog.dismiss()
-        })
+        }
 
-        newDocumentDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener({
+        newDocumentDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener {
             newDocumentDialog.dismiss()
             toggleKeyboard()
-        })
+        }
     }
 
     fun loadDocuments() {
@@ -252,7 +252,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
             Protection.askForPassword = false
-        }
+        } else if (item.itemId == android.R.id.home)
+            onBack()
 
         return true
     }

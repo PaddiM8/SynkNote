@@ -12,7 +12,9 @@ import android.view.inputmethod.InputMethodManager
 import org.apache.commons.lang.RandomStringUtils
 import android.text.Selection
 import android.widget.EditText
+import org.apache.commons.lang.StringUtils
 import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
+import java.io.File
 
 
 /**
@@ -86,4 +88,19 @@ fun getCurrentLinePosition(editText: EditText): Array<Int> {
         val lineEnd = layout.getLineEnd(lineNumber)
         arrayOf(lineStart, lineEnd)
     } else arrayOf(-1, -1)
+}
+
+fun getSaveLocation(context: Context): String {
+    return getDefaultPref(context).getString("localFolderEditText", null)
+}
+
+
+fun documentExists(documentName: String) : Boolean {
+    val fileLocation = MainActivity.FileList.currentDirectory + documentName
+    return File(fileLocation).exists()
+}
+
+
+fun isValidFileName(fileName: String): Boolean {
+    return !StringUtils.containsAny(fileName, "|\\?*<\\\":>/'")
 }

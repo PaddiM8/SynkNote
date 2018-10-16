@@ -1,12 +1,14 @@
 package synknotecom.paddi.synknote
 
+import android.util.Log
+
 class Lexer {
     fun lex(input: String): List<List<Int>> {
         val findings: MutableList<MutableList<Int>> = mutableListOf(
                 mutableListOf(), // **
                 mutableListOf(), // __
                 mutableListOf(), // *
-                mutableListOf() // _
+                mutableListOf()  // _
         )
 
         var i = 0

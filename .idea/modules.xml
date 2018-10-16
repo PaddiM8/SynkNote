@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SynknoteNew.iml" filepath="$PROJECT_DIR$/SynknoteNew.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SynkNote.iml" filepath="$PROJECT_DIR$/SynkNote.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

@@ -2,8 +2,10 @@ package synknotecom.paddi.synknote.Files
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import org.apache.commons.lang.StringUtils
 import org.jasypt.util.text.BasicTextEncryptor
 import synknotecom.paddi.synknote.*
@@ -16,7 +18,7 @@ class Document(documentId: Int = 0) {
         var documentContent = textEditorComponent.text.toString()
 
         if (getDefaultPref(context).getBoolean("encryptFilesSwitch", false))
-            documentContent = encryptString(documentContent, MainActivity.Protection.encryptionKey)
+            documentContent = documentContent.encrypt(MainActivity.Protection.encryptionKey)
         File(fixUrl(MainActivity.FileList.currentDirectory) + fileName).writeText(documentContent)
     }
 
@@ -24,7 +26,17 @@ class Document(documentId: Int = 0) {
         val documentFile = MainActivity.FileList.files[_documentId]
         var intent = Intent(view.context, MarkdownEditor::class.java)
         var documentContent = documentFile.readText()
-        documentContent = decryptString(documentContent, MainActivity.Protection.encryptionKey)
+
+        if (getDefaultPref(view.context).getBoolean("encryptFilesSwitch", false)) {
+            val decryptedText = documentContent.decrypt(MainActivity.Protection.encryptionKey)
+            if (decryptedText.second || documentContent == "") // Decrypting Failed
+            {
+                documentContent = decryptedText.first
+            } else {
+                Toast.makeText(view.context, "Failed to decrypt file.", Toast.LENGTH_LONG).show()
+                return
+            }
+        }
 
         if (documentFile.extension == "txt")
             intent = Intent(view.context, NormalEditor::class.java)
@@ -45,7 +57,7 @@ class Document(documentId: Int = 0) {
 
         MainActivity.FileList.files.add(File(directory + fileName))
         MainActivity.FileList.adapter.notifyDataSetChanged()
-        openDocument(MainActivity.FileList.files.count() - 1, view)
+        Document(MainActivity.FileList.files.count() - 1).open(view)
     }
 
     fun delete() {
@@ -59,29 +71,5 @@ class Document(documentId: Int = 0) {
         val newFile = File(getSaveLocation(view.context) + newName + "." + documentFile.extension)
         documentFile.renameTo(newFile)
         MainActivity.FileList.files[_documentId] = newFile
-    }
-
-    private fun encryptString(input: String, key: String): String {
-        return try {
-            val textEncryptor = BasicTextEncryptor()
-            textEncryptor.setPassword(key)
-            textEncryptor.encrypt(input)
-        } catch (e: Exception) {
-            input
-        }
-    }
-
-    private fun decryptString(input: String, key: String): String {
-        return try {
-            val textEncryptor = BasicTextEncryptor()
-            textEncryptor.setPassword(key)
-
-            if (input != "")
-                textEncryptor.decrypt(input)
-            else
-                ""
-        } catch (e: Exception) {
-            input
-        }
     }
 }

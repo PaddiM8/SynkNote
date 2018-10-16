@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.*
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
 import java.io.File
-import android.view.ContextMenu.ContextMenuInfo
 import synknotecom.paddi.synknote.Files.Document
 import synknotecom.paddi.synknote.Files.Folder
 
@@ -22,14 +21,14 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
         val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_row, parent, false)
         return ViewHolder(v).onClick { i: Int, _: Int ->
             if (fileList[i].isFile)
-                openDocument(i, parent.rootView)
+                Document(i).open(parent.rootView)
             else // If it's a folder
-                openFolder(i, mainActivity)
+                Folder(i).open(mainActivity)
         }
     }
 
     override fun onBindViewHolder(holder: Adapter.ViewHolder, position: Int) {
-        holder.bindItems(fileList[position], fileList)
+        holder.bindItems(fileList[position], position)
     }
 
     override fun getItemCount(): Int {
@@ -42,7 +41,7 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItems(file: File, fileList: ArrayList<File>) {
+        fun bindItems(file: File, fileId: Int) {
 
 
             var fileIcon = R.drawable.ic_file
@@ -63,19 +62,22 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
             itemView.text_view_document_title.text = file.nameWithoutExtension
             itemView.text_view_date.text = getDate(file.lastModified(), "dd/MM")
             itemView.more_button.setOnClickListener {
-                val popupMenu = PopupMenu(itemView.context, itemView)
-                val itemId = itemView.id
+                val popupMenu = PopupMenu(itemView.context, itemView, Gravity.END)
 
                 popupMenu.inflate(R.menu.menu_recyclerview_item)
                 popupMenu.setOnMenuItemClickListener {
                     when (it.itemId) {
-                        R.id.renameButton -> showRenameDialog(itemId, itemView)
+                        R.id.renameButton -> showRenameDialog(fileId, itemView)
                         R.id.deleteButton -> {
-                            if (fileList[itemId].isFile)
-                                Document(itemId).delete()
-                            else Folder(itemId).delete()
+                            if (file.isFile)
+                                Document(fileId).delete()
+                            else  Folder(fileId).delete()
                         }
-                        R.id.pinButton -> Log.d("Pin", "pin!") // TODO: Ability to pin item
+                        R.id.pinButton -> {
+                            if (file.isFile)
+                                Document(fileId).rename("." + file.name, itemView)
+                            else  Folder(fileId).rename("." + file.name)
+                        }
                     }
                     true
                 }

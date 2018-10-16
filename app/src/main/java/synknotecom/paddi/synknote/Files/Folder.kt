@@ -8,7 +8,7 @@ import java.io.File
 class Folder(folderId: Int = 0) {
     private val _folderId = folderId
 
-    fun create(name: String, view: View) {
+    fun create(name: String) {
         val folder = File(fixUrl(MainActivity.FileList.currentDirectory) + name)
         folder.mkdirs()
         MainActivity.FileList.files.add(0, folder)
@@ -21,7 +21,7 @@ class Folder(folderId: Int = 0) {
         MainActivity.FileList.adapter.removeItem(_folderId)
     }
 
-    fun rename(newName: String, view: View) {
+    fun rename(newName: String) {
         val documentFile = MainActivity.FileList.files[_folderId]
         val newFile = File(MainActivity.FileList.currentDirectory + newName + "." + documentFile.extension)
         documentFile.renameTo(newFile)

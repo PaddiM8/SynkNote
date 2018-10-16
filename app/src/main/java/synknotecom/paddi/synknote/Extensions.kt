@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import org.jasypt.util.text.BasicTextEncryptor
 
 /**
 * Created by PaddiM8 on 1/31/18.
@@ -27,3 +28,23 @@ fun Boolean.toInt() =
 
 fun Int.binaryInvert() =
         if (this == 0) 1 else 0
+
+fun String.encrypt(key: String): String {
+    return try {
+        val textEncryptor = BasicTextEncryptor()
+        textEncryptor.setPassword(key)
+        textEncryptor.encrypt(this)
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+fun String.decrypt(key: String): Pair<String, Boolean> {
+    return try {
+        val textEncryptor = BasicTextEncryptor()
+        textEncryptor.setPassword(key)
+        Pair(textEncryptor.decrypt(this), true)
+    } catch (e: Exception) {
+        Pair("", false)
+    }
+}

@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_editor.*
 import kotlinx.android.synthetic.main.activity_normal_editor.*
+import synknotecom.paddi.synknote.Files.Document
 
 class NormalEditor : AppCompatActivity() {
 
@@ -61,7 +62,7 @@ class NormalEditor : AppCompatActivity() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 if (editedSinceLastSave) {
-                    saveDocument(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
+                    Document().save(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
                     editedSinceLastSave = false
                 }
 
@@ -94,7 +95,7 @@ class NormalEditor : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        saveDocument(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
+        Document().save(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
         Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }
 
