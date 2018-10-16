@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import com.onegravity.rteditor.fonts.FontManager
 import synknotecom.paddi.synknote.Algorithms.BCrypt
 import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
 import synknotecom.paddi.synknote.Files.Document
@@ -94,6 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         // Fab click event
         fab.setOnClickListener { fabOnClick() }
+        //FontManager.preLoadFonts(this) // Preload
     }
 
     override fun onResume() {
