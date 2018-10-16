@@ -51,7 +51,7 @@ class MarkdownEditor : AppCompatActivity() {
         val rtManager = RTManager(rtApi, savedInstanceState)
         rtManager.registerEditor(markdown_editor, true)
 
-        // Fill document
+        // Fill with content
         title = intent.getStringExtra("title")
         markdown_editor.setText(intent.getStringExtra("content"))
 
@@ -68,11 +68,11 @@ class MarkdownEditor : AppCompatActivity() {
          var justCreated = true
         markdown_editor.addOnLayoutChangeListener { _: View, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int, _: Int ->
             if (justCreated) {
+                // Highlight markdown
                 layoutChanged()
                 justCreated = false
             }
         }
-
         editorTabs.setup()
 
         // Tab 1
@@ -155,7 +155,7 @@ class MarkdownEditor : AppCompatActivity() {
         // Highlight Markdown
         if (markdown_editor.text.isNotEmpty()) {
             val layout = markdown_editor.layout
-            for ((index, _) in markdown_editor.text.lines().withIndex()) {
+            for (index in 0 until markdown_editor.lineCount) {
                 val lineStart = layout.getLineStart(index)
                 val lineEnd = layout.getLineEnd(index)
                 styleMarkdown(lineStart, lineEnd)
@@ -171,19 +171,21 @@ class MarkdownEditor : AppCompatActivity() {
 
         val lexData = Lexer().lex(markdown) // Current line
         for ((typeIndex, modifier) in lexData.withIndex()) {
-            var i = 0
-            while (i + 1 < modifier.count()) {
-                val index1 = start + modifier[i] + getType(typeIndex).length
-                val index2 = start + modifier[i + 1]
-                makeSelection(index1, index2, typeIndex, true)
+            if (modifier.count() > 0) {
+                var i = 0
+                while (i + 1 < modifier.count()) {
+                    val index1 = start + modifier[i] + getType(typeIndex).length
+                    val index2 = start + modifier[i + 1]
+                    makeSelection(index1, index2, typeIndex, true)
 
-                i += 2
+                    i += 2
+                }
+
+                if (modifier.count() % 2 != 0)
+                    makeSelection(start, end, typeIndex,false)
             }
 
-            if (modifier.count() % 2 != 0)
-                makeSelection(start, end, typeIndex,false)
         }
-
 
         // Headings
         var typeIndex = 0
@@ -193,10 +195,14 @@ class MarkdownEditor : AppCompatActivity() {
             markdown.startsWith("### ") -> typeIndex = 6
         }
 
-        if (typeIndex >= 4)
+        if (typeIndex >= 4) {
             makeSelection(start, end, typeIndex, true)
-        else
-            makeSelection(start, end, 6, false)
+        } else {
+            val cursorPos = markdown_editor.selectionStart
+            markdown_editor.setSelection(start, end)
+            ALL_EFFECTS[6].applyToSelection(markdown_editor, 54)
+            markdown_editor.setSelection(cursorPos)
+        }
     }
 
     private fun makeSelection(index1: Int, index2: Int, typeIndex: Int, hasStyle: Boolean) {
@@ -211,26 +217,28 @@ class MarkdownEditor : AppCompatActivity() {
 
         // Set style to text inside modifiers
         markdown_editor.setSelection(index1, index2)
-        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[hasStyleInt])
+        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[hasStyleInt]) // Style!
 
         // Gray out modifiers
         val typeLength = getType(typeIndex).length
         if (effectIndex < 4 && hasStyle) { // Normal modifiers
-            markdown_editor.setSelection(index1 - typeLength, index2 + typeLength)          // Select entire thing
+            markdown_editor.setSelection(index1 - typeLength, index2 + typeLength)           // Select entire thing
             ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6D3D3D3"))  // Color it
+            ALL_EFFECTS[6].applyToSelection(markdown_editor, 2)
             markdown_editor.setSelection(index1, index2)                                                // Select inside (without modifiers)
+            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)                                 // Set to normal color
+            ALL_EFFECTS[6].applyToSelection(markdown_editor, 54)                                 // Set to normal size
         } else if (hasStyle) { // Headings
-            markdown_editor.setSelection(index1, index1 + typeLength)                             // Select pound signs
+            markdown_editor.setSelection(index1, index1 + typeLength)                              // Select pound signs
             ALL_EFFECTS[7].applyToSelection(markdown_editor, Color.parseColor("#A6D3D3D3"))  // Color them
+            ALL_EFFECTS[6].applyToSelection(markdown_editor, 54)
             markdown_editor.setSelection(index1 + typeLength)                                           // Select after pound signs
         }
 
-        ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor) // Set to normal color
-
         // Reset surroundings
-            markdown_editor.setSelection(cursorPosition)
-            ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[1])
-            ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
+        markdown_editor.setSelection(cursorPosition)
+        ALL_EFFECTS[effectIndex].applyToSelection(markdown_editor, effectValues[1])
+        ALL_EFFECTS[7].applyToSelection(markdown_editor, textColor)
     }
 
     private fun typeIndexToEffectIndex(typeIndex: Int): Int {
@@ -244,7 +252,7 @@ class MarkdownEditor : AppCompatActivity() {
     private inline fun <reified T> getEffectValues(typeIndex: Int): T {
         return when (typeIndex) {
             0, 1, 2, 3 -> listOf(true, false) as T
-            4 -> listOf(90, 42) as T
+            4 -> listOf(90, 54) as T
             5 -> listOf(75, 54) as T
             6 -> listOf(65, 54) as T
             else -> listOf(true, false) as T
