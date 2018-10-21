@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote
+package org.synknote
 
 import android.Manifest
 import android.content.Context
@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import kotlinx.android.synthetic.main.activity_main_window.*
@@ -17,16 +16,13 @@ import java.util.*
 import kotlinx.android.synthetic.main.password_dialog.*
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.support.v4.content.ContextCompat
-import android.text.Html
-import android.util.Log
-import android.util.TypedValue
-import com.onegravity.rteditor.fonts.FontManager
-import synknotecom.paddi.synknote.Algorithms.BCrypt
-import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
-import synknotecom.paddi.synknote.Files.Document
-import synknotecom.paddi.synknote.Files.Folder
+import org.synknote.Adapters.Adapter
+import org.synknote.Algorithms.BCrypt
+import org.synknote.Algorithms.PBKDF2Algo
+import org.synknote.Files.Document
+import org.synknote.Files.Folder
+import org.synknote.Misc.*
 
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -222,18 +218,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loadFileList() {
-        val directory = File(MainActivity.FileList.currentDirectory) // Directory from application root
+        val directory = File(FileList.currentDirectory) // Directory from application root
         supportActionBar?.setDisplayHomeAsUpEnabled(!isInMainDirectory(this))
 
         if (directory.exists()) {
             val allFiles = directory.listFiles() ?: return
-            val pinned   = allFiles.filter { it.name.startsWith(".") }
-            val folders  = allFiles.filter { it.isDirectory && !it.name.startsWith(".") }
-            val files    = allFiles.filter { it.isFile && !it.name.startsWith(".") }
+            val pinned   = allFiles.filter { it.name.startsWith("") }
+            val folders  = allFiles.filter { it.isDirectory && !it.name.startsWith("") }
+            val files    = allFiles.filter { it.isFile && !it.name.startsWith("") }
 
             folders.sortedWith(compareBy({ it.lastModified() }, { it.lastModified() }))
             files.sortedWith(compareBy({ it.lastModified() }, { it.lastModified() }))
-            MainActivity.FileList.files = ArrayList(pinned + folders + files)
+            FileList.files = ArrayList(pinned + folders + files)
         }
     }
 

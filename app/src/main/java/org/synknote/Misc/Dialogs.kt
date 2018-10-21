@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote
+package org.synknote.Misc
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,8 +9,9 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import kotlinx.android.synthetic.main.rename_dialog.*
-import synknotecom.paddi.synknote.Files.Document
-import java.io.File
+import org.synknote.Files.Document
+import org.synknote.MainActivity
+import org.synknote.R
 
 /**
 * Created by PaddiM8 on 2/4/18.
@@ -54,7 +55,7 @@ fun showRenameDialog(documentId: Int, view: View, mainActivity: MainActivity) {
 
         // Validation
         when {
-            documentExists(input)   -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
+            documentExists(input) -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
             input.isEmpty()         -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
             !isValidFileName(input) -> Toast.makeText(view.context, "File name contains bad characters!", Toast.LENGTH_LONG).show()
             else -> Document(documentId).rename(input, view, mainActivity)

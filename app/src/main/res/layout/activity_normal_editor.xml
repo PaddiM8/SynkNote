@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="synknotecom.paddi.synknote.NormalEditor">
+    tools:context="org.synknote.NormalEditor">
 
     <EditText
         android:id="@+id/normal_text_editor"
@@ -16,5 +15,6 @@
         android:gravity="top|start"
         android:inputType="textMultiLine"
         android:padding="5dp"
-        android:typeface="serif" />
+        android:typeface="serif"
+        tools:ignore="Autofill,LabelFor" />
 </RelativeLayout>

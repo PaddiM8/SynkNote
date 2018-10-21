@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote
+package org.synknote.Misc
 
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView

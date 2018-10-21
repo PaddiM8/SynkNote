@@ -1,11 +1,10 @@
-package synknotecom.paddi.synknote
+package org.synknote
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -20,10 +19,10 @@ import com.onegravity.rteditor.api.RTProxyImpl
 import com.onegravity.rteditor.effects.Effects.ALL_EFFECTS
 import kotlinx.android.synthetic.main.activity_editor.*
 import ru.noties.markwon.Markwon
-import synknotecom.paddi.synknote.Files.Document
+import org.synknote.Files.Document
 import android.graphics.Typeface
-import android.util.Log
-import kotlinx.android.synthetic.main.activity_main_window.*
+import org.synknote.Markdown.Lexer
+import org.synknote.Misc.*
 
 
 class MarkdownEditor : AppCompatActivity() {

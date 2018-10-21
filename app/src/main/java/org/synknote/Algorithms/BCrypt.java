@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote.Algorithms;
+package org.synknote.Algorithms;
 
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
@@ -35,7 +35,7 @@ public class BCrypt {
     private static String encode_base64(byte d[], int len)
             throws IllegalArgumentException {
         int off = 0;
-        StringBuffer rs = new StringBuffer();
+        StringBuilder rs = new StringBuilder();
         int c1, c2;
 
         if (len <= 0 || len > d.length)
@@ -73,8 +73,8 @@ public class BCrypt {
      * @param random		an instance of SecureRandom to use
      * @return	an encoded salt value
      */
-    public static String gensalt(int log_rounds, SecureRandom random) {
-        StringBuffer rs = new StringBuffer();
+    private static String gensalt(int log_rounds, SecureRandom random) {
+        StringBuilder rs = new StringBuilder();
         byte rnd[] = new byte[BCRYPT_SALT_LEN];
 
         random.nextBytes(rnd);
@@ -99,7 +99,7 @@ public class BCrypt {
      * 2**log_rounds.
      * @return	an encoded salt value
      */
-    public static String gensalt(int log_rounds) {
+    private static String gensalt(int log_rounds) {
         return gensalt(log_rounds, new SecureRandom());
     }
 

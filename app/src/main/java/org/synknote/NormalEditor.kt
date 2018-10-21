@@ -1,21 +1,19 @@
-package synknotecom.paddi.synknote
+package org.synknote
 
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_editor.*
-import kotlinx.android.synthetic.main.activity_main_window.*
 import kotlinx.android.synthetic.main.activity_normal_editor.*
-import synknotecom.paddi.synknote.Files.Document
+import org.synknote.Files.Document
+import org.synknote.Misc.ActivityTypes
 
 class NormalEditor : AppCompatActivity() {
 

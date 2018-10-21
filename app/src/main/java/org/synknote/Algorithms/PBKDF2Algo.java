@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote.Algorithms;
+package org.synknote.Algorithms;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -24,8 +24,7 @@ public class PBKDF2Algo {
         return iterations + ":" + toHex(salt) + ":" + toHex(hash);
     }
 
-    private static String toHex(byte[] array) throws NoSuchAlgorithmException
-    {
+    private static String toHex(byte[] array) {
         BigInteger bi = new BigInteger(1, array);
         String hex = bi.toString(16);
         int paddingLength = (array.length * 2) - hex.length();

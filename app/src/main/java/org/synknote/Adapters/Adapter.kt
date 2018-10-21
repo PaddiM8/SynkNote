@@ -1,25 +1,32 @@
-package synknotecom.paddi.synknote
+package org.synknote.Adapters
 
-import android.opengl.Visibility
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
+import org.synknote.Files.Document
+import org.synknote.Files.Folder
+import org.synknote.MainActivity
+import org.synknote.Misc.Icons
+import org.synknote.Misc.getDate
+import org.synknote.Misc.onClick
+import org.synknote.Misc.showRenameDialog
+import org.synknote.R
+import org.synknote.ThemeManager
 import java.io.File
-import synknotecom.paddi.synknote.Files.Document
-import synknotecom.paddi.synknote.Files.Folder
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities
 
 
 /**
-* Created by PaddiM8 on 1/31/18.
-*/
+ * Created by PaddiM8 on 1/31/18.
+ */
 
 class Adapter(private val fileList: ArrayList<File>, private val mainActivity: MainActivity) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_item_row, parent, false)
         return ViewHolder(v).onClick { i: Int, _: Int ->
             if (fileList[i].isFile)
@@ -29,7 +36,7 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
         }
     }
 
-    override fun onBindViewHolder(holder: Adapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(fileList[position], position, mainActivity)
     }
 
@@ -61,7 +68,7 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
 
             val originalFileName = file.nameWithoutExtension
             var fileName = originalFileName
-            if (fileName.startsWith(".")) {
+            if (fileName.startsWith("")) {
                 fileName = fileName.substring(1)
                 itemView.pin.visibility = View.VISIBLE
             }
@@ -73,7 +80,7 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
                 var newPinName = ".$originalFileName"
                 popupMenu.inflate(R.menu.menu_recyclerview_item)
 
-                if (originalFileName.startsWith(".")) {
+                if (originalFileName.startsWith("")) {
                     popupMenu.menu.getItem(2).title = "Unpin"
                     newPinName = originalFileName.substring(1)
                 }
@@ -84,7 +91,7 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
                         R.id.deleteButton -> {
                             if (file.isFile)
                                 Document(fileId).delete()
-                            else  Folder(fileId).delete()
+                            else Folder(fileId).delete()
                         }
                         R.id.pinButton -> {
                             if (file.isFile) {

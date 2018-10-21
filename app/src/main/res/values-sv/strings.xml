@@ -17,4 +17,14 @@
     <string name="language">Språk</string>
     <string name="use_dark_theme">Använd Mörkt Tema</string>
     <string name="password_lock">Lösenordsskyddat</string>
+    <string name="encrypt_files">Kryptera filer</string>
+    <string name="rename">Ändra namn</string>
+    <string name="pin">Pin</string>
+    <string name="Delete">Ta bort</string>
+    <string name="setPassword">Sätt Lösenord</string>
+    <string name="changeTheme">Ändra tema</string>
+    <string name="dark_theme">Mörkt tema</string>
+    <string name="lightTheme">Ljust tema</string>
+    <string name="full_dark_theme">Fult mörkt tema</string>
+    <string name="orange_theme">Orange tema</string>
 </resources>

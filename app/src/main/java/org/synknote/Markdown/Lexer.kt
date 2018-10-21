@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote
+package org.synknote.Markdown
 
 import android.util.Log
 

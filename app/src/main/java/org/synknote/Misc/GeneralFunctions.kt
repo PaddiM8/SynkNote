@@ -1,4 +1,4 @@
-package synknotecom.paddi.synknote
+package org.synknote.Misc
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,7 +13,8 @@ import org.apache.commons.lang.RandomStringUtils
 import android.text.Selection
 import android.widget.EditText
 import org.apache.commons.lang.StringUtils
-import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
+import org.synknote.Algorithms.PBKDF2Algo
+import org.synknote.MainActivity
 import java.io.File
 
 

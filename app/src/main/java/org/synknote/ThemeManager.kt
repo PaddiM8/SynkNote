@@ -1,7 +1,9 @@
-package synknotecom.paddi.synknote
+package org.synknote
 
-import android.app.Activity
 import android.content.Context
+import org.synknote.Misc.ActivityTypes
+import org.synknote.Misc.Icons
+import org.synknote.Misc.getPref
 
 class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes.NORMAL) {
     private val _context = context
@@ -60,30 +62,30 @@ class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes
 
         if (_activityType == ActivityTypes.MAIN) {
             return when (theme) {
-                R.style.AppTheme_Dark      -> R.style.AppTheme_Dark_Main
-                R.style.AppTheme           -> R.style.AppTheme_Main
+                R.style.AppTheme_Dark -> R.style.AppTheme_Dark_Main
+                R.style.AppTheme -> R.style.AppTheme_Main
                 R.style.AppTheme_Dark_Full -> R.style.AppTheme_Dark_Full_Main
-                R.style.AppTheme_Orange    -> R.style.AppTheme_Orange_Main
+                R.style.AppTheme_Orange -> R.style.AppTheme_Orange_Main
                 else                       -> R.style.AppTheme_Dark_Full_Main
             }
         }
 
         if (_activityType == ActivityTypes.PREFERENCES) {
             return when (theme) {
-                R.style.AppTheme_Dark      -> R.style.AppTheme_SettingsTheme_Dark
-                R.style.AppTheme           -> R.style.AppTheme_SettingsTheme
+                R.style.AppTheme_Dark -> R.style.AppTheme_SettingsTheme_Dark
+                R.style.AppTheme -> R.style.AppTheme_SettingsTheme
                 R.style.AppTheme_Dark_Full -> R.style.AppTheme_SettingsTheme_Dark_Full
-                R.style.AppTheme_Orange    -> R.style.AppTheme_SettingsTheme_Orange
+                R.style.AppTheme_Orange -> R.style.AppTheme_SettingsTheme_Orange
                 else                       -> R.style.AppTheme_SettingsTheme_Dark_Full
             }
         }
 
         if (_activityType == ActivityTypes.EDITOR) {
             return when (theme) {
-                R.style.AppTheme_Dark      -> R.style.AppTheme_Dark_General
-                R.style.AppTheme           -> R.style.AppTheme_General
+                R.style.AppTheme_Dark -> R.style.AppTheme_Dark_General
+                R.style.AppTheme -> R.style.AppTheme_General
                 R.style.AppTheme_Dark_Full -> R.style.AppTheme_Dark_Full_General
-                R.style.AppTheme_Orange    -> R.style.AppTheme_Orange_General
+                R.style.AppTheme_Orange -> R.style.AppTheme_Orange_General
                 else                       -> R.style.AppTheme_Dark_Full_General
             }
         }

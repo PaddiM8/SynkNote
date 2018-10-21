@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Themes">
+    tools:context="org.synknote.Themes">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,6 +28,7 @@
                     android:layout_weight="1"
                     android:baseline="0dp"
                     android:tag="dark"
+                    android:contentDescription="@string/dark_theme"
                     app:srcCompat="@drawable/dark" />
 
                 <ImageView
@@ -36,6 +37,7 @@
                     android:layout_height="250dp"
                     android:layout_weight="1"
                     android:tag="light"
+                    android:contentDescription="@string/lightTheme"
                     app:srcCompat="@drawable/light" />
             </LinearLayout>
 
@@ -50,6 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="250dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/full_dark_theme"
                     app:srcCompat="@drawable/dark_full" />
 
                 <ImageView
@@ -57,6 +60,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="250dp"
                     android:layout_weight="1"
+                    android:contentDescription="@string/orange_theme"
                     app:srcCompat="@drawable/orange" />
             </LinearLayout>
         </LinearLayout>

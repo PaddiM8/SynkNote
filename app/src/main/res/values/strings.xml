@@ -106,4 +106,8 @@
     <string name="Delete">Delete</string>
     <string name="setPassword">Set Password</string>
     <string name="changeTheme">Change Theme</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="lightTheme">Light Theme</string>
+    <string name="full_dark_theme">Full Dark Theme</string>
+    <string name="orange_theme">Orange Theme</string>
 </resources>

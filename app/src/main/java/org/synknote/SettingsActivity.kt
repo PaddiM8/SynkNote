@@ -1,17 +1,12 @@
-package synknotecom.paddi.synknote
+package org.synknote
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.MenuItem
-import android.widget.Button
-import kotlinx.android.synthetic.main.activity_main_window.*
-import kotlinx.android.synthetic.main.password_dialog.*
-import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
+import org.synknote.Algorithms.PBKDF2Algo
+import org.synknote.Misc.*
 import java.io.File
 
 class SettingsActivity : AppCompatActivity() {

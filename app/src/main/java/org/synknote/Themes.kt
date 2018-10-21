@@ -1,9 +1,9 @@
-package synknotecom.paddi.synknote
+package org.synknote
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main_window.*
 import kotlinx.android.synthetic.main.activity_themes.*
+import org.synknote.Misc.getPref
 
 class Themes : AppCompatActivity() {
 

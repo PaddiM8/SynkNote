@@ -1,16 +1,13 @@
-package synknotecom.paddi.synknote.Files
+package org.synknote.Files
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-import org.apache.commons.lang.StringUtils
-import org.jasypt.util.text.BasicTextEncryptor
-import synknotecom.paddi.synknote.*
 import java.io.File
-import android.app.ActivityOptions
+import org.synknote.*
+import org.synknote.Misc.*
 
 class Document(documentId: Int = 0, documentFile: File = File("")) {
     private val _documentId = documentId
@@ -75,7 +72,7 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
 
     fun rename(newName: String, view: View, mainActivity: MainActivity) {
         val documentFile = MainActivity.FileList.files[_documentId]
-        val newFile = File(getSaveLocation(view.context) + newName + "." + documentFile.extension)
+        val newFile = File(getSaveLocation(view.context) + newName + "" + documentFile.extension)
         documentFile.renameTo(newFile)
         //MainActivity.FileList.files[_documentId] = newFile
         //MainActivity.FileList.adapter.notifyItemChanged(_documentId)
