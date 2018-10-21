@@ -13,6 +13,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_editor.*
+import kotlinx.android.synthetic.main.activity_main_window.*
 import kotlinx.android.synthetic.main.activity_normal_editor.*
 import synknotecom.paddi.synknote.Files.Document
 
@@ -21,13 +22,10 @@ class NormalEditor : AppCompatActivity() {
     private var editedSinceLastSave = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean("darkThemeSettingsCheckbox", false))
-            setTheme(R.style.AppTheme_Dark_General)
+        ThemeManager(this, ActivityTypes.EDITOR).loadTheme()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_normal_editor)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         title = intent.getStringExtra("title")

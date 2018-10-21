@@ -39,12 +39,6 @@ fun getDate(milliSeconds: Long, dateFormat: String): String {
     return formatter.format(calendar.time)
 }
 
-fun loadTheme(context: Context) {
-    val defaultPref = PreferenceManager.getDefaultSharedPreferences(context)
-    if (defaultPref.getBoolean("darkThemeSettingsCheckbox", false))
-        context.setTheme(R.style.AppTheme_Dark)
-}
-
 fun getDefaultPref(context: Context): SharedPreferences {
     return PreferenceManager.getDefaultSharedPreferences(context)
 }

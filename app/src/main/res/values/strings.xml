@@ -104,4 +104,6 @@
     <string name="rename">Rename</string>
     <string name="pin">Pin</string>
     <string name="Delete">Delete</string>
+    <string name="setPassword">Set Password</string>
+    <string name="changeTheme">Change Theme</string>
 </resources>

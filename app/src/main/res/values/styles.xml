@@ -1,8 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,6 +10,7 @@
         <item name="moreButton">@drawable/ic_more_light</item>
         <item name="fileIcon">@drawable/ic_file</item>
         <item name="folderIcon">@drawable/ic_folder</item>
+        <item name="actionBarFontColor">@color/textColorPrimaryInverse</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat">
@@ -22,16 +22,30 @@
         <item name="android:textColorPrimaryInverse">@color/textColorPrimary</item>
         <item name="android:textColorSecondaryInverse">@color/textColorSecondary</item>
         <item name="recyclerViewItem">@color/listItemColorDark</item>
-        <item name="windowNoTitle">true</item>
         <item name="android:colorForeground">@color/colorBackgroundDark</item>
         <item name="separatorLineColor">@color/separatorLineColorDark</item>
         <item name="moreButton">@drawable/ic_more_dark</item>
         <item name="fileIcon">@drawable/ic_file_dark</item>
         <item name="folderIcon">@drawable/ic_folder_dark</item>
+        <item name="actionBarFontColor">@color/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="AppTheme.Dark.Full" parent="AppTheme.Dark">
+        <item name="colorPrimary">@color/colorPrimaryDarkFull</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkerFull</item>
+        <item name="colorAccent">@color/colorAccentDarkFull</item>
+        <item name="separatorLineColor">@color/separatorLineColorDarkFull</item>
+    </style>
+
+    <style name="AppTheme.Orange" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimaryOrange</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryOrangeDark</item>
+        <item name="colorAccent">@color/colorAccentOrange</item>
     </style>
 
     <style name="AppTheme.General" parent="AppTheme">
         <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
         <item name="tabHostBackground">@color/colorPrimary</item>
         <item name="textColorEditor">@color/textColorEditorLight</item>
     </style>
@@ -40,6 +54,35 @@
         <item name="windowNoTitle">false</item>
         <item name="tabHostBackground">@color/colorPrimaryInverse</item>
         <item name="textColorEditor">@color/textColorEditorDark</item>
+    </style>
+
+    <style name="AppTheme.Dark.Full.General" parent="AppTheme.Dark.Full">
+        <item name="windowNoTitle">false</item>
+        <item name="tabHostBackground">@color/colorPrimaryDarkFull</item>
+        <item name="textColorEditor">@color/textColorEditorDark</item>
+    </style>
+
+    <style name="AppTheme.Orange.General" parent="AppTheme.Orange">
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="tabHostBackground">@color/colorPrimaryOrange</item>
+        <item name="textColorEditor">@color/textColorEditorLight</item>
+    </style>
+
+    <style name="AppTheme.Main" parent="AppTheme">
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Dark.Main" parent="AppTheme.Dark">
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Dark.Full.Main" parent="AppTheme.Dark.Full">
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Orange.Main" parent="AppTheme.Orange">
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -58,10 +101,24 @@
 
     <style name="AppTheme.SettingsTheme" parent="AppTheme">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
     </style>
 
     <style name="AppTheme.SettingsTheme.Dark" parent="AppTheme.Dark">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+
+    <style name="AppTheme.SettingsTheme.Dark.Full" parent="AppTheme.Dark.Full">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+
+    <style name="AppTheme.SettingsTheme.Orange" parent="AppTheme.Orange">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="actionMenuTextColor">@color/textColorPrimaryInverse</item>
+        <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
     </style>
 

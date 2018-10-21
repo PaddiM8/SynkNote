@@ -10,9 +10,11 @@ import org.apache.commons.lang.StringUtils
 import org.jasypt.util.text.BasicTextEncryptor
 import synknotecom.paddi.synknote.*
 import java.io.File
+import android.app.ActivityOptions
 
-class Document(documentId: Int = 0) {
+class Document(documentId: Int = 0, documentFile: File = File("")) {
     private val _documentId = documentId
+    private val _documentFile = documentFile
 
     fun save(context: Context, fileName: String, textEditorComponent: EditText) {
         var documentContent = textEditorComponent.text.toString()
@@ -23,7 +25,10 @@ class Document(documentId: Int = 0) {
     }
 
     fun open(view: View) {
-        val documentFile = MainActivity.FileList.files[_documentId]
+        var documentFile = _documentFile
+        if (_documentFile == File(""))
+            documentFile = MainActivity.FileList.files[_documentId]
+
         var intent = Intent(view.context, MarkdownEditor::class.java)
         var documentContent = documentFile.readText()
 
@@ -53,11 +58,13 @@ class Document(documentId: Int = 0) {
         val fileName = name + getFileExtensionFromType(type)
         val directory = fixUrl(MainActivity.FileList.currentDirectory)
         File(directory).mkdirs()
-        File(directory + fileName).createNewFile()
+        val file = File(directory + fileName)
+        file.createNewFile()
+        MainActivity.FileList.adapter.add(file)
 
-        MainActivity.FileList.files.add(File(directory + fileName))
-        MainActivity.FileList.adapter.notifyDataSetChanged()
-        Document(MainActivity.FileList.files.count() - 1).open(view)
+        //MainActivity.FileList.files.add(File(directory + fileName))
+        //MainActivity.FileList.adapter.notifyDataSetChanged()
+        Document(0, file).open(view)
     }
 
     fun delete() {
@@ -66,10 +73,12 @@ class Document(documentId: Int = 0) {
         MainActivity.FileList.adapter.removeItem(_documentId)
     }
 
-    fun rename(newName: String, view: View) {
+    fun rename(newName: String, view: View, mainActivity: MainActivity) {
         val documentFile = MainActivity.FileList.files[_documentId]
         val newFile = File(getSaveLocation(view.context) + newName + "." + documentFile.extension)
         documentFile.renameTo(newFile)
-        MainActivity.FileList.files[_documentId] = newFile
+        //MainActivity.FileList.files[_documentId] = newFile
+        //MainActivity.FileList.adapter.notifyItemChanged(_documentId)
+        mainActivity.loadDocuments()
     }
 }

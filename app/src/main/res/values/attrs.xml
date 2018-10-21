@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="recyclerViewItem" format="reference" />
-    <attr name="tabHostBackground" format="reference" />
-    <attr name="textColorEditor" format="reference" />
+    <attr name="recyclerViewItem"   format="reference" />
+    <attr name="tabHostBackground"  format="reference" />
+    <attr name="textColorEditor"    format="reference" />
     <attr name="separatorLineColor" format="reference" />
-    <attr name="moreButton" format="reference" />
-    <attr name="fileIcon" format="reference" />
-    <attr name="folderIcon" format="reference" />
+    <attr name="moreButton"         format="reference" />
+    <attr name="fileIcon"           format="reference" />
+    <attr name="folderIcon"         format="reference" />
+    <attr name="actionBarFontColor" format="reference" />
 </resources>

@@ -50,7 +50,7 @@ dependencies {
 task indexAssets {
     description 'Index Build Variant assets for faster lookup by AssetManager'
 
-    ext.assetsSrcDir = file( "${projectDir}/src/main/assets" )
+    ext.assetsSrcDir = file("${projectDir}/src/main/assets")
 
     inputs.dir assetsSrcDir
 
@@ -73,10 +73,10 @@ task indexAssets {
 }
 
 indexAssets.dependsOn {
-    tasks.matching { task -> task.name.startsWith( 'merge' ) && task.name.endsWith( 'Assets' ) }
+    tasks.matching { task -> task.name.startsWith('merge') && task.name.endsWith('Assets') }
 }
 
-tasks.withType( JavaCompile ) {
+tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn indexAssets
 }
 

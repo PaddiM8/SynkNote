@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Themes">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/darkThemeItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:layout_weight="1"
+                    android:baseline="0dp"
+                    android:tag="dark"
+                    app:srcCompat="@drawable/dark" />
+
+                <ImageView
+                    android:id="@+id/lightThemeitem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:layout_weight="1"
+                    android:tag="light"
+                    app:srcCompat="@drawable/light" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/darkFullItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/dark_full" />
+
+                <ImageView
+                    android:id="@+id/orangeItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="250dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/orange" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

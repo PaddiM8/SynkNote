@@ -52,7 +52,7 @@
                         android:paddingBottom="0dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
-                        android:paddingTop="0dp"
+                        android:paddingTop="15dp"
                         android:textColor="?attr/textColorEditor"
                         android:textIsSelectable="true"
                         android:textSize="18sp"

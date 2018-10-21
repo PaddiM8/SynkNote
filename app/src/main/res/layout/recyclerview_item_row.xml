@@ -64,6 +64,15 @@
                 android:text="@string/date"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
 
+            <ImageView
+                android:id="@+id/pin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="135dp"
+                android:layout_marginTop="45dp"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/ic_pin" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

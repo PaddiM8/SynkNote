@@ -23,6 +23,7 @@ import ru.noties.markwon.Markwon
 import synknotecom.paddi.synknote.Files.Document
 import android.graphics.Typeface
 import android.util.Log
+import kotlinx.android.synthetic.main.activity_main_window.*
 
 
 class MarkdownEditor : AppCompatActivity() {
@@ -30,11 +31,7 @@ class MarkdownEditor : AppCompatActivity() {
     private var editedSinceLastSave = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Set theme
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("darkThemeSettingsCheckbox", false))
-            setTheme(R.style.AppTheme_Dark_General)
-        else
-            setTheme(R.style.AppTheme_General)
+        ThemeManager(this, ActivityTypes.EDITOR).loadTheme()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_editor)

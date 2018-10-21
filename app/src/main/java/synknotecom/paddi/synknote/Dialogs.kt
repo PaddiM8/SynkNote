@@ -44,7 +44,7 @@ fun createRenameDialog(context: Context): AlertDialog {
     return dialog.create()
 }
 
-fun showRenameDialog(documentId: Int, view: View) {
+fun showRenameDialog(documentId: Int, view: View, mainActivity: MainActivity) {
     val renameDialog = createRenameDialog(view.context)
     renameDialog.show()
 
@@ -57,13 +57,13 @@ fun showRenameDialog(documentId: Int, view: View) {
             documentExists(input)   -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
             input.isEmpty()         -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
             !isValidFileName(input) -> Toast.makeText(view.context, "File name contains bad characters!", Toast.LENGTH_LONG).show()
-            else -> Document(documentId).rename(input, view)
+            else -> Document(documentId).rename(input, view, mainActivity)
         }
 
         /*val file = File(MainActivity.FileList.currentDirectory + "/" + input + "." + fileExtension)
         MainActivity.FileList.files[documentId] = file.renameTo
         MainActivity.FileList.adapter.notifyDataSetChanged()*/
-        Document(documentId).rename("$input.$fileExtension", view)
+        Document(documentId).rename("$input.$fileExtension", view, mainActivity)
         renameDialog.dismiss()
     }
 
@@ -80,7 +80,7 @@ fun createPasswordDialog(context: Context): AlertDialog {
     dialogView.findViewById<EditText>(R.id.password_input)
     dialog.setView(dialogView)
     dialog.setCancelable(false)
-    dialog.setPositiveButton("Enter", { _: DialogInterface, _: Int -> })
+    dialog.setPositiveButton("Enter") { _: DialogInterface, _: Int -> }
 
     return dialog.create()
 }

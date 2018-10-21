@@ -17,8 +17,11 @@ import java.util.*
 import kotlinx.android.synthetic.main.password_dialog.*
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.support.v4.content.ContextCompat
+import android.text.Html
 import android.util.Log
+import android.util.TypedValue
 import com.onegravity.rteditor.fonts.FontManager
 import synknotecom.paddi.synknote.Algorithms.BCrypt
 import synknotecom.paddi.synknote.Algorithms.PBKDF2Algo
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        loadTheme(this)
+        ThemeManager(this, ActivityTypes.MAIN).loadTheme()
 
         // Initialization
         super.onCreate(savedInstanceState)
@@ -79,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         // Password Lock
         val passwordLockSettingEnabled = getDefaultPref(this)
                 .getBoolean("passwordLockSwitch", false)
-        val passwordHash = getPref("DataPref", this)
+        val passwordHash = getPref("Security", this)
                 .getString("password_hash", null)
 
         if (passwordLockSettingEnabled && Protection.askForPassword && passwordHash != null) {
@@ -89,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             if (!passwordLockSettingEnabled) {
                 Protection.encryptionKey = getEncryptionKey()
             }
-            loadFileList()
+            //loadFileList()
             loadDocuments()
         }
 
@@ -120,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         // Go to main directory
         if (!isInMainDirectory(this)) {
             FileList.currentDirectory = getSaveLocation(this)
-            loadFileList()
+            //loadFileList()
             loadDocuments()
         }
     }
@@ -170,14 +173,14 @@ class MainActivity : AppCompatActivity() {
         toggleKeyboard()
 
         passwordDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val pref = applicationContext.getSharedPreferences("DataPref", MODE_PRIVATE)
+            val pref = applicationContext.getSharedPreferences("Security", MODE_PRIVATE)
             val dialogInput = passwordDialog.password_input.text.toString()
 
             if (dialogInput.isNotEmpty()) {
                 if (PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray()) == pref.getString("password_hash", null)) {
                     passwordDialog.password_input.setText("")
                     passwordDialog.dismiss()
-                    loadFileList()
+                    //loadFileList()
                     loadDocuments()
                     toggleKeyboard()
 
@@ -213,6 +216,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loadDocuments() {
+        loadFileList()
         FileList.adapter = Adapter(FileList.files, this)
         recycler_view.adapter = FileList.adapter
     }
@@ -222,12 +226,14 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(!isInMainDirectory(this))
 
         if (directory.exists()) {
-            val files = directory.listFiles()
+            val allFiles = directory.listFiles() ?: return
+            val pinned   = allFiles.filter { it.name.startsWith(".") }
+            val folders  = allFiles.filter { it.isDirectory && !it.name.startsWith(".") }
+            val files    = allFiles.filter { it.isFile && !it.name.startsWith(".") }
 
-            if (files != null) {
-                Arrays.sort(files) { a, b -> java.lang.Long.compare(b.lastModified(), a.lastModified()) }
-                MainActivity.FileList.files = ArrayList(files.toList())
-            }
+            folders.sortedWith(compareBy({ it.lastModified() }, { it.lastModified() }))
+            files.sortedWith(compareBy({ it.lastModified() }, { it.lastModified() }))
+            MainActivity.FileList.files = ArrayList(pinned + folders + files)
         }
     }
 
