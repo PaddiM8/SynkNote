@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    android:paddingStart="45dp"
+    android:paddingTop="30dp"
+    android:paddingEnd="45dp"
+    tools:context=".RegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/email"
+            android:textColor="@color/colorBackgroundLight"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/email_register_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/colorBackgroundLight" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/passwordInput"
+            android:textColor="@color/colorBackgroundLight"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/password_register_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/colorBackgroundLight" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirmPassword"
+            android:textColor="@color/colorBackgroundLight"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/confirm_password_register_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColor="@color/colorBackgroundLight" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_register"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="7dp"
+            android:backgroundTint="?attr/colorAccent"
+            android:elevation="0dp"
+            android:text="Register"
+            android:textColor="@color/colorBackgroundLight" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

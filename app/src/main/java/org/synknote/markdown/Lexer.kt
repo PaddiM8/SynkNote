@@ -1,6 +1,4 @@
-package org.synknote.Markdown
-
-import android.util.Log
+package org.synknote.markdown
 
 class Lexer {
     fun lex(input: String): List<List<Int>> {

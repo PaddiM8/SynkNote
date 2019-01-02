@@ -5,7 +5,7 @@
         <Preference
             android:id="@+id/change_theme"
             android:title="@string/changeTheme"
-            android:key="changeThemeButton"
+            android:key="change_theme_button"
             />
         <!--<ListPreference
             android:id="@+id/languageList"
@@ -15,27 +15,35 @@
             android:key="languageSelectionList"
             android:title="@string/language" />-->
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/security">
+    <!--<PreferenceCategory android:title="@string/security">
         <SwitchPreference
             android:id="@+id/encrypt_files_switch"
             android:defaultValue="true"
-            android:key="encryptFilesSwitch"
+            android:key="encrypt_files_switch"
             android:title="@string/encrypt_files" />
         <SwitchPreference
             android:id="@+id/password_lock_switch"
             android:defaultValue="false"
-            android:key="passwordLockSwitch"
+            android:key="password_lock_switch"
             android:title="@string/password_lock" />
         <EditTextPreference
             android:id="@+id/password_input_settings"
             android:defaultValue="password"
-            android:dependency="passwordLockSwitch"
+            android:dependency="password_lock_switch"
             android:inputType="textPassword"
-            android:key="passwordLockEditText"
+            android:key="password_lock_edit_text"
             android:singleLine="true"
             android:title="@string/setPassword" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/local_folder">
+    </PreferenceCategory>-->
+
+    <EditTextPreference
+        android:id="@+id/sync_server_address"
+        android:defaultValue="192.168.1.224"
+        android:inputType="text"
+        android:key="sync_server_address"
+        android:singleLine="true"
+        android:title="Sync Server Address" />
+    <!--<PreferenceCategory android:title="@string/local_folder">
         <EditTextPreference
             android:id="@+id/local_folder_edit_text"
             android:defaultValue="/android/data"
@@ -45,6 +53,6 @@
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="Folder Path" />
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
 </PreferenceScreen>

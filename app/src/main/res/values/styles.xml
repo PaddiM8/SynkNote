@@ -122,4 +122,9 @@
         <item name="windowNoTitle">false</item>
     </style>
 
+    <style name="NavigationViewStyle">
+        <item name="android:textSize">18sp</item> <!-- menu item text size-->
+        <item name="android:listPreferredItemHeightSmall">40dp</item><!-- menu item height-->
+    </style>
+
 </resources>

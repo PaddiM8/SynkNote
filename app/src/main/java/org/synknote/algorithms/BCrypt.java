@@ -1,6 +1,5 @@
-package org.synknote.Algorithms;
+package org.synknote.algorithms;
 
-import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 
 /**

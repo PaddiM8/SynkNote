@@ -1,4 +1,4 @@
-package org.synknote.Adapters
+package org.synknote.adapters
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.PopupMenu
@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.recyclerview_item_row.view.*
-import org.synknote.Files.Document
-import org.synknote.Files.Folder
+import org.synknote.files.Document
+import org.synknote.files.Folder
 import org.synknote.MainActivity
-import org.synknote.Misc.Icons
-import org.synknote.Misc.getDate
-import org.synknote.Misc.onClick
-import org.synknote.Misc.showRenameDialog
+import org.synknote.misc.Icons
+import org.synknote.misc.getDate
+import org.synknote.misc.onClick
+import org.synknote.misc.showRenameDialog
 import org.synknote.R
 import org.synknote.ThemeManager
 import java.io.File
@@ -68,7 +68,9 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
 
             val originalFileName = file.nameWithoutExtension
             var fileName = originalFileName
-            if (fileName.startsWith("")) {
+            val isPinned = fileName.startsWith(".")
+
+            if (isPinned) {
                 fileName = fileName.substring(1)
                 itemView.pin.visibility = View.VISIBLE
             }
@@ -80,20 +82,20 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
                 var newPinName = ".$originalFileName"
                 popupMenu.inflate(R.menu.menu_recyclerview_item)
 
-                if (originalFileName.startsWith("")) {
+                if (isPinned) {
                     popupMenu.menu.getItem(2).title = "Unpin"
                     newPinName = originalFileName.substring(1)
                 }
 
                 popupMenu.setOnMenuItemClickListener {
                     when (it.itemId) {
-                        R.id.renameButton -> showRenameDialog(fileId, itemView, mainActivity)
-                        R.id.deleteButton -> {
+                        R.id.rename_button -> showRenameDialog(fileId, itemView, mainActivity)
+                        R.id.delete_button -> {
                             if (file.isFile)
                                 Document(fileId).delete()
                             else Folder(fileId).delete()
                         }
-                        R.id.pinButton -> {
+                        R.id.pin_button -> {
                             if (file.isFile) {
                                 Document(fileId).rename(newPinName, itemView, mainActivity)
                             } else {

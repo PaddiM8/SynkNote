@@ -27,4 +27,18 @@
     <string name="lightTheme">Ljust tema</string>
     <string name="full_dark_theme">Fult mörkt tema</string>
     <string name="orange_theme">Orange tema</string>
+    <string name="not_logged_in">Inte inloggad</string>
+    <string name="login">Logga in</string>
+    <string name="register">Registrera</string>
+    <string name="navigation_drawer_open">Öpnna meny</string>
+    <string name="navigation_drawer_close">Stäng meny</string>
+    <string name="notebooks">Anteckningsblock</string>
+    <string name="loginRegister">Logga in / Registrera</string>
+    <string name="add_notebook">Skapa anteckningsblock</string>
+    <string name="notebook_name">Antecknigsblock Namn</string>
+    <string name="notebook_location">Anteckningsblock Plats (valfritt)</string>
+    <string name="edit_notebook">Redigera anteckningsblock</string>
+    <string name="email">Email</string>
+    <string name="passwordInput">Lösenord</string>
+    <string name="confirmPassword">Lösenord Igen</string>
 </resources>

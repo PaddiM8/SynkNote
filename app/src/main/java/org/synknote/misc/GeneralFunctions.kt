@@ -1,4 +1,4 @@
-package org.synknote.Misc
+package org.synknote.misc
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,9 +13,16 @@ import org.apache.commons.lang.RandomStringUtils
 import android.text.Selection
 import android.widget.EditText
 import org.apache.commons.lang.StringUtils
-import org.synknote.Algorithms.PBKDF2Algo
+import org.synknote.algorithms.PBKDF2Algo
 import org.synknote.MainActivity
+import org.synknote.preferences.PrefGroup
+import org.synknote.preferences.PrefManager
 import java.io.File
+import android.app.AlarmManager
+import android.content.Intent
+import android.app.PendingIntent
+
+
 
 
 /**
@@ -86,7 +93,8 @@ fun getCurrentLinePosition(editText: EditText): Array<Int> {
 }
 
 fun getSaveLocation(context: Context): String {
-    return getDefaultPref(context).getString("localFolderEditText", null)
+    return PrefManager(context, PrefGroup.Notebooks)
+            .getString(MainActivity.FileList.currentNotebook.name)
 }
 
 

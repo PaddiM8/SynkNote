@@ -1,9 +1,11 @@
 package org.synknote
 
 import android.content.Context
-import org.synknote.Misc.ActivityTypes
-import org.synknote.Misc.Icons
-import org.synknote.Misc.getPref
+import org.synknote.misc.ActivityTypes
+import org.synknote.misc.Icons
+import org.synknote.misc.getPref
+import org.synknote.preferences.PrefGroup
+import org.synknote.preferences.PrefManager
 
 class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes.NORMAL) {
     private val _context = context
@@ -11,12 +13,13 @@ class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes
     private val _defaultTheme = R.style.AppTheme_Dark_Full
 
     init {
-        if (!getPref("Themes", context).contains("currentTheme"))
-             getPref("Themes", context).edit().putString("currentTheme", "darkFull").apply()
+        val themesPref = PrefManager(context, PrefGroup.Themes)
+        if (!themesPref.get().contains("current_theme"))
+            themesPref.setString("current_theme", "dark_full")
     }
 
     fun loadTheme() {
-        val themeName = getPref("Themes", _context).getString("currentTheme", null)
+        val themeName = PrefManager(_context, PrefGroup.Themes).getString("current_theme")
         loadTheme(themeName)
     }
 
@@ -29,7 +32,7 @@ class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes
     }
 
     fun getIcon(icon: Icons): Int {
-        val themeName = getPref("Themes", _context).getString("currentTheme", null)
+        val themeName = PrefManager(_context, PrefGroup.Themes).getString("current_theme")
         if (icon == Icons.FOLDER) {
             return when {
                 themeName.startsWith("light")     -> R.drawable.ic_folder
@@ -42,6 +45,12 @@ class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes
                 themeName.startsWith("dark")      -> R.drawable.ic_file_dark
                 else    -> R.drawable.ic_file_dark
             }
+        } else if (icon == Icons.NOTEBOOK) {
+            return when {
+                themeName.startsWith("light")     -> R.drawable.ic_notebook_light
+                themeName.startsWith("dark")      -> R.drawable.ic_notebook_dark
+                else    -> R.drawable.ic_notebook_light
+            }
         }
 
         return 0
@@ -51,8 +60,8 @@ class ThemeManager(context: Context, activityType: ActivityTypes = ActivityTypes
         return when (themeName) {
             "dark"        -> R.style.AppTheme_Dark
             "light"       -> R.style.AppTheme
-            "darkFull"    -> R.style.AppTheme_Dark_Full
-            "lightOrange" -> R.style.AppTheme_Orange
+            "dark_full"    -> R.style.AppTheme_Dark_Full
+            "light_orange" -> R.style.AppTheme_Orange
             else          -> _defaultTheme
         }
     }

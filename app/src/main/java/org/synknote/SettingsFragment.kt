@@ -15,7 +15,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        val themeButton = findPreference("changeThemeButton")
+        val themeButton = findPreference("change_theme_button")
         themeButton.setOnPreferenceClickListener {
             val themeChooser = Intent(context, Themes::class.java)
             startActivityForResult(themeChooser, 1)

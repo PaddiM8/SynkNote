@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import org.synknote.Algorithms.PBKDF2Algo
-import org.synknote.Misc.*
+import org.synknote.algorithms.PBKDF2Algo
+import org.synknote.misc.*
+import org.synknote.preferences.PrefGroup
+import org.synknote.preferences.PrefManager
 import java.io.File
 
 class SettingsActivity : AppCompatActivity() {
@@ -33,8 +35,8 @@ class SettingsActivity : AppCompatActivity() {
                 .commit()
 
         // Save current set local folder location, to later see if it was changed
-        OnStart.localFolderLocation = getDefaultPref(this)
-                                        .getString("localFolderEditText", null)
+        //OnStart.localFolderLocation = getDefaultPref(this)
+        //                                .getString("localFolderEditText", null)
 
         OnStart.encryptOption = getDefaultPref(this)
                 .getBoolean("encryptFilesSwitch", false)
@@ -73,14 +75,15 @@ class SettingsActivity : AppCompatActivity() {
     private fun applySettings() {
 
         // Check if folder location was changed
-        val folderLocation = getDefaultPref(this).getString("localFolderEditText", null)
+        val folderLocation = PrefManager(this, PrefGroup.Notebooks).get()
+                .getString(MainActivity.FileList.currentNotebook.name, null)
         if (OnStart.localFolderLocation != folderLocation)
             MainActivity.FileList.currentDirectory = folderLocation // Change current directory to the new folder location
 
-        if (getDefaultPref(this).getBoolean("encryptFilesSwitch", false) != OnStart.encryptOption)
+        if (getDefaultPref(this).getBoolean("encrypt_files_switch", false) != OnStart.encryptOption)
             onEncryptOptionChanged()
 
-        if (getDefaultPref(this).getBoolean("passwordLockSwitch", false) != OnStart.passwordLock)
+        if (getDefaultPref(this).getBoolean("password_lock_switch", false) != OnStart.passwordLock)
             applyPasswordLockHash()
 
         val intent = Intent(this, MainActivity::class.java)
@@ -90,9 +93,9 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun onEncryptOptionChanged() {
         val defaultPref = getDefaultPref(this)
-        val encrypt     = defaultPref.getBoolean("encryptFilesSwitch", false)
-        val defaultEncryptionKey = getPref("Security", this)
-                .getString("defaultEncryptionKey", null)
+        val encrypt     = defaultPref.getBoolean("encrypt_files_switch", false)
+        val defaultEncryptionKey = PrefManager(this, PrefGroup.Security)
+                .getString("default_encryption_key")
 
         if (encrypt) {
             reencryptDocuments(
@@ -115,8 +118,8 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun applyPasswordLockHash() {
         val defaultPref       = getDefaultPref(this)
-        val specifiedPassword = defaultPref.getString("passwordLockEditText", "")
-        val passwordLock      = defaultPref.getBoolean("passwordLockSwitch", false)
+        val specifiedPassword = defaultPref.getString("password_lock_edit_text", "")
+        val passwordLock      = defaultPref.getBoolean("password_lock_switch", false)
         val pref = applicationContext.getSharedPreferences("Security", Context.MODE_PRIVATE)
 
         if (passwordLock && specifiedPassword != "") {
@@ -132,7 +135,7 @@ class SettingsActivity : AppCompatActivity() {
 
             pref.edit().putString("password_hash", hashedPassword).apply()
         } else if (!passwordLock) {
-            val defaultEncryptionKey = pref.getString("defaultEncryptionKey", null)
+            val defaultEncryptionKey = pref.getString("default_encryption_key", null)
             reencryptDocuments(File(getSaveLocation(this)),
                     pref.getString("password_hash", null),
                     defaultEncryptionKey)
@@ -142,7 +145,7 @@ class SettingsActivity : AppCompatActivity() {
 
         }
 
-        defaultPref.edit().putString("passwordLockEditText", "").apply()
+        defaultPref.edit().putString("password_lock_edit_text", "").apply()
     }
 
     override fun onBackPressed() {

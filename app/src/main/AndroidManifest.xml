@@ -3,6 +3,7 @@
     package="org.synknote">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="org.synknote.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -23,18 +24,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.synknote.MarkdownEditor"
+            android:name=".MarkdownEditor"
             android:screenOrientation="portrait" />
         <activity
-            android:name="org.synknote.NormalEditor"
+            android:name=".NormalEditor"
             android:screenOrientation="portrait" />
         <activity
-            android:name="org.synknote.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.SettingsTheme" />
         <activity android:name="com.onegravity.rteditor.media.choose.MediaChooserActivity" />
         <activity android:name="com.onegravity.rteditor.media.crop.CropImageActivity" />
-        <activity android:name="org.synknote.Themes" />
+        <activity android:name=".Themes" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>

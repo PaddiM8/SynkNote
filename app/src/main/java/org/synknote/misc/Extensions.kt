@@ -1,4 +1,4 @@
-package org.synknote.Misc
+package org.synknote.misc
 
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
@@ -34,10 +34,9 @@ fun String.encrypt(key: String): String {
     return try {
         val textEncryptor = BasicTextEncryptor()
         textEncryptor.setPassword(key)
-        Log.d("Encryption Key", key)
         textEncryptor.encrypt(this)
     } catch (e: Exception) {
-        ""
+        this
     }
 }
 
@@ -45,7 +44,6 @@ fun String.decrypt(key: String): Pair<String, Boolean> {
     return try {
         val textEncryptor = BasicTextEncryptor()
         textEncryptor.setPassword(key)
-        Log.d("Decryption Key", key)
         Pair(textEncryptor.decrypt(this), true)
     } catch (e: Exception) {
         Pair("", false)

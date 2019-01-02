@@ -19,15 +19,17 @@ import com.onegravity.rteditor.api.RTProxyImpl
 import com.onegravity.rteditor.effects.Effects.ALL_EFFECTS
 import kotlinx.android.synthetic.main.activity_editor.*
 import ru.noties.markwon.Markwon
-import org.synknote.Files.Document
+import org.synknote.files.Document
 import android.graphics.Typeface
-import org.synknote.Markdown.Lexer
-import org.synknote.Misc.*
+import kotlinx.android.synthetic.main.activity_normal_editor.*
+import org.synknote.markdown.Lexer
+import org.synknote.misc.*
 
 
 class MarkdownEditor : AppCompatActivity() {
 
     private var editedSinceLastSave = false
+    private var noteId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager(this, ActivityTypes.EDITOR).loadTheme()
@@ -54,6 +56,7 @@ class MarkdownEditor : AppCompatActivity() {
 
         // Fill with content
         title = intent.getStringExtra("title")
+        noteId = intent.getStringExtra("noteId")
         markdown_editor.setText(intent.getStringExtra("content"))
 
         markdown_editor.setOnClickListener {
@@ -96,7 +99,7 @@ class MarkdownEditor : AppCompatActivity() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 if (editedSinceLastSave) {
-                    Document().save(applicationContext, intent.getStringExtra("filename"), markdown_editor)
+                    Document().save(applicationContext, intent.getStringExtra("filename"), noteId, markdown_editor, false)
                     editedSinceLastSave = false
                 }
 
@@ -216,7 +219,7 @@ class MarkdownEditor : AppCompatActivity() {
         val hasStyleInt    = hasStyle.toInt().binaryInvert()
         var textColor      = Color.BLACK
 
-        if (getDefaultPref(this).getBoolean("darkThemeSettingsCheckbox", false))
+        if (getDefaultPref(this).getBoolean("dark_theme_settings_checkbox", false))
             textColor = Color.WHITE
 
         // Style!
@@ -295,7 +298,12 @@ class MarkdownEditor : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        Document().save(applicationContext, intent.getStringExtra("filename"), markdown_editor)
+        Document().save(applicationContext,
+                intent.getStringExtra("filename"),
+                noteId,
+                markdown_editor,
+                MainActivity.FileList.currentNotebook.sync
+        )
     }
 
 }

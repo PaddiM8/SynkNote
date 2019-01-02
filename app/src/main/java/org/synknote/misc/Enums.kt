@@ -1,4 +1,4 @@
-package org.synknote.Misc
+package org.synknote.misc
 
 /**
 * Created by PaddiM8 on 2018-03-07.
@@ -6,7 +6,8 @@ package org.synknote.Misc
 
 enum class Icons {
     FOLDER,
-    FILE
+    FILE,
+    NOTEBOOK
 }
 
 enum class ActivityTypes {
@@ -14,4 +15,9 @@ enum class ActivityTypes {
     EDITOR,
     PREFERENCES,
     MAIN
+}
+
+enum class SyncReturnType {
+    MAP,
+    NOTERETURN
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/notebooks" android:id="@+id/notebooks_item">
+        <menu>
+            <group
+                android:id="@+id/notebooks_group">
+
+            </group>
+        </menu>
+    </item>
+
+    <group
+        android:id="@+id/add_note_book_group"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/add_notebook_item"
+            android:icon="@drawable/ic_add"
+            android:title="@string/add_notebook" />
+        <item
+            android:id="@+id/edit_notebook_item"
+            android:icon="@drawable/ic_edit"
+            android:title="@string/edit_notebook" />
+    </group>
+
+</menu>

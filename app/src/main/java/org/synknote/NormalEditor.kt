@@ -12,12 +12,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_normal_editor.*
-import org.synknote.Files.Document
-import org.synknote.Misc.ActivityTypes
+import org.synknote.files.Document
+import org.synknote.misc.ActivityTypes
 
 class NormalEditor : AppCompatActivity() {
 
     private var editedSinceLastSave = false
+    private var noteId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager(this, ActivityTypes.EDITOR).loadTheme()
@@ -27,6 +28,7 @@ class NormalEditor : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         title = intent.getStringExtra("title")
+        noteId = intent.getStringExtra("noteId")
         normal_text_editor.setText(intent.getStringExtra("content"))
         autoSave()
 
@@ -58,7 +60,7 @@ class NormalEditor : AppCompatActivity() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 if (editedSinceLastSave) {
-                    Document().save(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
+                    Document().save(applicationContext, intent.getStringExtra("filename"), noteId, normal_text_editor, false)
                     editedSinceLastSave = false
                 }
 
@@ -91,7 +93,12 @@ class NormalEditor : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        Document().save(applicationContext, intent.getStringExtra("filename"), normal_text_editor)
+        Document().save(applicationContext,
+                intent.getStringExtra("filename"),
+                noteId,
+                normal_text_editor,
+                MainActivity.FileList.currentNotebook.sync
+        )
         Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }
 

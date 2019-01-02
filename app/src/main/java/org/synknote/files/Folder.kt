@@ -1,7 +1,7 @@
-package org.synknote.Files
+package org.synknote.files
 
 import org.synknote.MainActivity
-import org.synknote.Misc.fixUrl
+import org.synknote.misc.fixUrl
 import java.io.File
 
 class Folder(folderId: Int = 0) {

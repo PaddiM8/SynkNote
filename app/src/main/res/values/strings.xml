@@ -110,4 +110,20 @@
     <string name="lightTheme">Light Theme</string>
     <string name="full_dark_theme">Full Dark Theme</string>
     <string name="orange_theme">Orange Theme</string>
+    <string name="not_logged_in">Not Logged In</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="navigation_drawer_open">Open Drawer</string>
+    <string name="navigation_drawer_close">Close Drawer Drawer</string>
+    <string name="loginRegister">Login / Register</string>
+    <string name="add_notebook">Add Notebook...</string>
+    <string name="notebook_name">Notebook Name</string>
+    <string name="notebook_location">Notebook Location (optional)</string>
+    <string name="notebooks">Notebooks</string>
+    <string name="edit_notebook">Edit Notebook</string>
+    <string name="email">Email</string>
+    <string name="passwordInput">Password</string>
+    <string name="confirmPassword">Confirm Password</string>
+    <string name="loggedIn">Logged In</string>
+    <string name="logout">Logout</string>
 </resources>
