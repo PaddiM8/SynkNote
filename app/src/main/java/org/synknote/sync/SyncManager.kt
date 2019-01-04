@@ -6,10 +6,12 @@ import okhttp3.Request
 import org.synknote.misc.getDefaultPref
 import java.io.IOException
 import android.os.StrictMode
+import android.util.Log
 import android.widget.Toast
 import com.google.gson.GsonBuilder
 import okhttp3.HttpUrl
 import org.synknote.misc.SyncReturnType
+import org.synknote.models.ActionsReturn
 import org.synknote.models.NoteReturn
 import org.synknote.models.NoteSkeleton
 import org.synknote.preferences.PrefGroup
@@ -58,6 +60,13 @@ class SyncManager(context: Context) {
         return when (type) {
             SyncReturnType.NOTERETURN -> {
                 val result = GsonBuilder().create().fromJson(responseBody, NoteReturn::class.java)
+                PrefManager(_context, PrefGroup.Sync).setString("token",
+                        result.token)
+
+                result
+            }
+            SyncReturnType.ACTIONSRETURN -> {
+                val result = GsonBuilder().create().fromJson(responseBody, ActionsReturn::class.java)
                 PrefManager(_context, PrefGroup.Sync).setString("token",
                         result.token)
 
@@ -149,6 +158,19 @@ class SyncManager(context: Context) {
         return makeRequest(request) as Map<*, *>
     }
 
+    fun deleteNote(userId: String, token: String, noteId: String): Map<*, *> {
+        val formBody = FormBody.Builder()
+                .add("userId",     userId)
+                .add("token",      token)
+                .build()
+        val request = Request.Builder()
+                .url(getUrl("api/note/$noteId"))
+                .delete(formBody)
+                .build()
+
+        return makeRequest(request) as Map<*, *>
+    }
+
     fun getNote(userId: String, token: String, noteId: String): Map<*, *> {
         val httpUrl = HttpUrl.parse(getUrl("api/note/$noteId").toString())!!.newBuilder()
                 .addQueryParameter("userId", userId)
@@ -185,6 +207,19 @@ class SyncManager(context: Context) {
                 .build()
 
         return makeRequest(request) as Map<*, *>
+    }
+
+    fun getActions(userId: String, token: String, actionId: Int): ActionsReturn {
+        val httpUrl = HttpUrl.parse(getUrl("api/user/$userId/actions").toString())!!.newBuilder()
+                .addQueryParameter("userId", userId)
+                .addQueryParameter("token", token)
+                .addQueryParameter("afterId",   actionId.toString())
+                .build()
+        val request = Request.Builder()
+                .url(httpUrl)
+                .build()
+
+        return makeRequest(request, SyncReturnType.ACTIONSRETURN) as ActionsReturn
     }
 
     fun getErrorCode(): ReturnCode {

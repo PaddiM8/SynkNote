@@ -91,9 +91,12 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
                     when (it.itemId) {
                         R.id.rename_button -> showRenameDialog(fileId, itemView, mainActivity)
                         R.id.delete_button -> {
-                            if (file.isFile)
+                            if (file.isFile) {
+                                mainActivity.refresh()
                                 Document(fileId).delete()
-                            else Folder(fileId).delete()
+                            } else {
+                                Folder(fileId).delete()
+                            }
                         }
                         R.id.pin_button -> {
                             if (file.isFile) {

@@ -19,6 +19,7 @@ class NormalEditor : AppCompatActivity() {
 
     private var editedSinceLastSave = false
     private var noteId = ""
+    private var salt = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager(this, ActivityTypes.EDITOR).loadTheme()
@@ -29,6 +30,7 @@ class NormalEditor : AppCompatActivity() {
 
         title = intent.getStringExtra("title")
         noteId = intent.getStringExtra("noteId")
+        salt = intent.getStringExtra("salt")
         normal_text_editor.setText(intent.getStringExtra("content"))
         autoSave()
 
@@ -60,7 +62,8 @@ class NormalEditor : AppCompatActivity() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 if (editedSinceLastSave) {
-                    Document().save(applicationContext, intent.getStringExtra("filename"), noteId, normal_text_editor, false)
+                    Document().save(applicationContext, intent.getStringExtra("filename"),
+                            noteId, normal_text_editor.text.toString(), false, salt)
                     editedSinceLastSave = false
                 }
 
@@ -96,8 +99,9 @@ class NormalEditor : AppCompatActivity() {
         Document().save(applicationContext,
                 intent.getStringExtra("filename"),
                 noteId,
-                normal_text_editor,
-                MainActivity.FileList.currentNotebook.sync
+                normal_text_editor.text.toString(),
+                MainActivity.FileList.currentNotebook.sync,
+                salt
         )
         Toast.makeText(this,"Document saved.", Toast.LENGTH_SHORT).show()
     }

@@ -126,4 +126,5 @@
     <string name="confirmPassword">Confirm Password</string>
     <string name="loggedIn">Logged In</string>
     <string name="logout">Logout</string>
+    <string name="refresh">Refresh</string>
 </resources>

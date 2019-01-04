@@ -19,5 +19,12 @@ enum class ActivityTypes {
 
 enum class SyncReturnType {
     MAP,
-    NOTERETURN
+    NOTERETURN,
+    ACTIONSRETURN
+}
+
+enum class NoteActionTypes {
+    CREATE,
+    DELETE,
+    MOVE
 }

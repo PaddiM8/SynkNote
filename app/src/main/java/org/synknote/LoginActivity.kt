@@ -2,19 +2,13 @@ package org.synknote
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_login.*
-import org.apache.commons.lang.RandomStringUtils
 import org.synknote.algorithms.PBKDF2Algo
 import org.synknote.files.Notebook
-import org.synknote.files.NotebookData
-import org.synknote.misc.getPref
 import org.synknote.preferences.PrefGroup
 import org.synknote.preferences.PrefManager
 import org.synknote.sync.SyncManager
-import com.google.gson.reflect.TypeToken
 import android.content.Intent
 import org.synknote.misc.fixUrl
 
@@ -44,12 +38,16 @@ class LoginActivity : AppCompatActivity() {
 
             val newEncryptionKey = PBKDF2Algo.generateHash(password,
                     MainActivity.Protection.salt.toByteArray())
-            MainActivity.Protection.encryptionKey = newEncryptionKey
+            MainActivity.Protection.offlineEncryptionKey = newEncryptionKey
+            PrefManager(this, PrefGroup.Security).setString("password", password)
 
-            val result = syncManager.getAllNotebooks(result["id"].toString(),
-                                                     result["token"].toString())
+            val notebooksResult = syncManager.getAllNotebooks(result["id"].toString(),
+                                                       result["token"].toString())
 
-            val notebooks = GsonBuilder().create().fromJson(result["notebooks"].toString(),
+            PrefManager(this, PrefGroup.Sync).setString("actionId",
+                                               result["actionId"].toString())
+
+            val notebooks = GsonBuilder().create().fromJson(notebooksResult["notebooks"].toString(),
                                               ArrayList<Map<String, Map<String, String>>>()::class.java)
             for (notebook in notebooks) {
                 val location = fixUrl(filesDir.canonicalPath) + notebook["name"].toString()

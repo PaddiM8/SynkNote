@@ -4,11 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
 import com.google.gson.GsonBuilder
+import org.apache.commons.lang.StringUtils
 import java.io.File
 import org.synknote.*
+import org.synknote.algorithms.BCrypt
 import org.synknote.misc.*
 import org.synknote.preferences.PrefGroup
 import org.synknote.preferences.PrefManager
@@ -18,15 +19,17 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
     private val _documentId = documentId
     private val _documentFile = documentFile
 
-    fun save(context: Context, fileName: String, noteId: String, textEditorComponent: EditText, sync: Boolean) {
-        var documentContent = textEditorComponent.text.toString()
+    fun save(context: Context, fileName: String, noteId: String, content: String, sync: Boolean, salt: String = "") {
+        var documentContent = content
 
         //if (getDefaultPref(context).getBoolean("encrypt_files_switch", false)) {
-            documentContent = documentContent.encrypt(MainActivity.Protection.encryptionKey)
+        var encryptionKey = MainActivity.Protection.offlineEncryptionKey
+        if (sync) encryptionKey = MainActivity.Protection.getSyncEncryptionKey(context, salt)
+        documentContent = documentContent.encrypt(encryptionKey)
         //}
 
         if (MainActivity.FileList.currentNotebook.sync)
-            documentContent += noteId
+            documentContent += salt + noteId
 
         File(fixUrl(MainActivity.FileList.currentDirectory) + fileName)
                                                       .writeText(documentContent)
@@ -50,35 +53,46 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
         var intent = Intent(view.context, MarkdownEditor::class.java)
         var documentContent = documentFile.readText()
         var noteId = ""
+        var salt = ""
         val sync = MainActivity.FileList.currentNotebook.sync
 
         if (sync && !new) {
-            noteId = documentContent.substring(documentContent.length - 24)
-
             val syncPref = PrefManager(view.context, PrefGroup.Sync)
             val result = SyncManager(view.context).getNote(
                     syncPref.getString("userId"),
                     syncPref.getString("token"),
-                    noteId
+                    partitionNoteData(documentContent).id
             )
 
-            //syncPref.setString("token", result["token"].toString())
-            documentContent = result["content"].toString()
-                    .substring(0, documentContent.length - 24)
+            val resultContent = result["content"].toString()
+            Log.d("result!!!", resultContent)
+            val noteData = partitionNoteData(resultContent)
+
+            noteId = noteData.id
+            salt = noteData.salt
+            documentContent = noteData.body
         } else if (sync && new) {
-            noteId = documentContent
+            val noteData = partitionNoteData(documentContent)
+            noteId = noteData.id
+            salt = noteData.salt
             documentContent = ""
         }
 
+        Log.d("SALT!!!", salt)
+        Log.d("NOTEID!!!", noteId)
+
         //if (getDefaultPref(view.context).getBoolean("encrypt_files_switch", false)) {
-            val decryptedText = documentContent.decrypt(MainActivity.Protection.encryptionKey)
-            if (decryptedText.second || documentContent == "") // Decrypting Succeeded
-            {
-                documentContent = decryptedText.first
-            } else {
-                Toast.makeText(view.context, "Failed to decrypt file.", Toast.LENGTH_LONG).show()
-                return
-            }
+        var encryptionKey = MainActivity.Protection.offlineEncryptionKey
+        if (sync) encryptionKey = MainActivity.Protection.getSyncEncryptionKey(view.context, salt)
+
+        val decryptedText = documentContent.decrypt(encryptionKey)
+        if (decryptedText.second || documentContent == "") // Decrypting Succeeded
+        {
+            documentContent = decryptedText.first
+        } else {
+            Toast.makeText(view.context, "Failed to decrypt file.", Toast.LENGTH_LONG).show()
+            return
+        }
         //}
 
         if (documentFile.extension == "txt")
@@ -87,6 +101,7 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
         MainActivity.Protection.askForPassword = false
 
         intent.putExtra("noteId", noteId)
+        intent.putExtra("salt", salt)
         intent.putExtra("title", documentFile.nameWithoutExtension)
         intent.putExtra("content", documentContent)
         intent.putExtra("filename", documentFile.name)
@@ -110,6 +125,7 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
             val notebookData = GsonBuilder().create().fromJson(notebook, NotebookData::class.java)
             val path = file.canonicalPath.substring(view.context.filesDir.canonicalPath.length)
 
+
             val result = SyncManager(view.context).createNote(
                     syncPref.getString("userId"),
                     syncPref.getString("token"),
@@ -117,8 +133,13 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
                     notebookData.id
             )
 
+            syncPref.setString("actionId", result["actionId"].toString())
+
             //syncPref.setString("token", result["token"].toString())
-            file.writeText(result["id"].toString())
+            val salt = BCrypt.gensalt()
+            val noteId = result["id"].toString()
+            //file.writeText(salt + result["id"].toString())
+            save(view.context, fileName, noteId, "", true, salt)
         }
         //MainActivity.FileList.files.add(File(directory + fileName))
         //MainActivity.FileList.adapter.notifyDataSetChanged()
@@ -127,7 +148,24 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
 
     fun add(context: Context, location: String, id: String) {
         val file = File(fixUrl(context.filesDir.canonicalPath) + location)
-        file.writeText(id)
+        file.writeText(StringUtils.repeat("-", 29) + id)
+    }
+
+    fun delete(context: Context) {
+
+        if (MainActivity.FileList.currentNotebook.sync) {
+            val syncPref = PrefManager(context, PrefGroup.Sync)
+            val noteId = "" // TODO
+            val result = SyncManager(context).deleteNote(
+                    syncPref.getString("userId"),
+                    syncPref.getString("token"),
+                    noteId
+            )
+
+            syncPref.setString("actionId", result["actionId"].toString())
+        }
+
+        delete()
     }
 
     fun delete() {

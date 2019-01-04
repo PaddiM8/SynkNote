@@ -26,11 +26,8 @@ import org.synknote.files.Document
 import org.synknote.files.Folder
 import org.synknote.misc.*
 import android.support.v4.view.GravityCompat
-import android.text.format.DateUtils
 import android.util.Log
 import com.google.gson.GsonBuilder
-import kotlinx.android.synthetic.main.activity_login.view.*
-import kotlinx.android.synthetic.main.activity_register.view.*
 import kotlinx.android.synthetic.main.add_notebook_dialog.*
 import kotlinx.android.synthetic.main.drawer_header.view.*
 import org.synknote.R.id.*
@@ -38,7 +35,7 @@ import org.synknote.files.Notebook
 import org.synknote.files.NotebookData
 import org.synknote.preferences.PrefGroup
 import org.synknote.preferences.PrefManager
-import kotlin.reflect.jvm.internal.impl.serialization.ProtoBuf
+import org.synknote.sync.SyncManager
 
 
 @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -55,8 +52,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     object Protection {
         var askForPassword = true
-        var encryptionKey = ""
+        var offlineEncryptionKey = ""
         var salt = ""
+
+        fun getSyncEncryptionKey(context: Context, salt: String): String {
+            val password = PrefManager(context, PrefGroup.Security).getString("password")
+            return PBKDF2Algo.generateHash(password, salt.toByteArray())
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,6 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fab.setImageResource(R.drawable.ic_add)
         Protection.salt = getSalt()
 
+
         // Select last used notebook
         if (FileList.currentNotebook.name == "") {
             val lastNotebookName = PrefManager(this, PrefGroup.NotebooksData)
@@ -108,7 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             // Set to default encryption key, if the user choose to not use password lock, the encryption key won't be protected locally.
             if (!passwordLockSettingEnabled) {
-                Protection.encryptionKey = getEncryptionKey()
+                Protection.offlineEncryptionKey = getEncryptionKey()
             }
             //loadFileList()
             loadDocuments()
@@ -272,7 +275,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     loadDocuments()
                     toggleKeyboard()
 
-                    Protection.encryptionKey = PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray())
+                    Protection.offlineEncryptionKey = PBKDF2Algo.generateHash(dialogInput, Protection.salt.toByteArray())
                 }
             }
         }
@@ -331,10 +334,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val documentName = newDocumentDialog.document_name_input.text.toString()
 
 
-            if (documentType == "Folder")
+            if (documentType == "Folder") {
                 Folder().create(documentName)
-            else
+            } else {
+                if (FileList.currentNotebook.sync) refresh()
                 Document().create(documentName, documentType, window.decorView, FileList.currentNotebook.sync)
+            }
 
             newDocumentDialog.document_name_input.text.clear()
             newDocumentDialog.dismiss()
@@ -382,6 +387,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer.setDrawerListener(mDrawerToggle)
     }
 
+    public fun refresh() {
+        val syncPref = PrefManager(this, PrefGroup.Sync)
+        val result = SyncManager(this).getActions(
+                syncPref.getString("userId"),
+                syncPref.getString("token"),
+                syncPref.getString("actionId").toInt()
+        )
+
+        if (result.actions.count() > 0) {
+            for (action in result.actions) {
+                when (action.actionType) {
+                    NoteActionTypes.CREATE.ordinal ->
+                        Document().add(this, action.value, action.subject)
+                }
+            }
+
+            syncPref.setString("actionId", result.newestActionId)
+        }
+
+        loadDocuments()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main_window, menu)
@@ -393,12 +420,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        if (item.itemId == R.id.action_settings) {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-            Protection.askForPassword = false
-        } else if (item.itemId == android.R.id.home)
-            onBack()
+        when (item.itemId) {
+            R.id.action_settings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+                Protection.askForPassword = false
+            }
+            android.R.id.home -> onBack()
+            refresh -> refresh()
+        }
 
         return true
     }

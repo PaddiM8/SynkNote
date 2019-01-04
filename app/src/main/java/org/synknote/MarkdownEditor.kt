@@ -30,6 +30,7 @@ class MarkdownEditor : AppCompatActivity() {
 
     private var editedSinceLastSave = false
     private var noteId = ""
+    private var salt = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeManager(this, ActivityTypes.EDITOR).loadTheme()
@@ -57,6 +58,7 @@ class MarkdownEditor : AppCompatActivity() {
         // Fill with content
         title = intent.getStringExtra("title")
         noteId = intent.getStringExtra("noteId")
+        salt = intent.getStringExtra("salt")
         markdown_editor.setText(intent.getStringExtra("content"))
 
         markdown_editor.setOnClickListener {
@@ -99,7 +101,8 @@ class MarkdownEditor : AppCompatActivity() {
         handler.postDelayed(object : Runnable {
             override fun run() {
                 if (editedSinceLastSave) {
-                    Document().save(applicationContext, intent.getStringExtra("filename"), noteId, markdown_editor, false)
+                    Document().save(applicationContext, intent.getStringExtra("filename"),
+                            noteId, markdown_editor.text.toString(), false, salt)
                     editedSinceLastSave = false
                 }
 
@@ -301,8 +304,9 @@ class MarkdownEditor : AppCompatActivity() {
         Document().save(applicationContext,
                 intent.getStringExtra("filename"),
                 noteId,
-                markdown_editor,
-                MainActivity.FileList.currentNotebook.sync
+                markdown_editor.text.toString(),
+                MainActivity.FileList.currentNotebook.sync,
+                salt
         )
     }
 

@@ -72,7 +72,7 @@ public class BCrypt {
      * @param random		an instance of SecureRandom to use
      * @return	an encoded salt value
      */
-    private static String gensalt(int log_rounds, SecureRandom random) {
+    public static String gensalt(int log_rounds, SecureRandom random) {
         StringBuilder rs = new StringBuilder();
         byte rnd[] = new byte[BCRYPT_SALT_LEN];
 

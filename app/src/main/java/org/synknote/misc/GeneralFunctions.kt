@@ -21,8 +21,7 @@ import java.io.File
 import android.app.AlarmManager
 import android.content.Intent
 import android.app.PendingIntent
-
-
+import org.synknote.models.NoteData
 
 
 /**
@@ -106,4 +105,13 @@ fun documentExists(documentName: String) : Boolean {
 
 fun isValidFileName(fileName: String): Boolean {
     return !StringUtils.containsAny(fileName, "|\\?*<\\\":>/'")
+}
+
+fun partitionNoteData(content: String): NoteData {
+    val body = content.substring(0, content.length - 53)
+    val dataString = content.substring(content.length - 53)
+    val salt = dataString.substring(0, 29)
+    val id = dataString.substring(29)
+
+    return NoteData(id, salt, body)
 }

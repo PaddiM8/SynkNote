@@ -104,15 +104,15 @@ class SettingsActivity : AppCompatActivity() {
                     defaultEncryptionKey
             )
 
-            MainActivity.Protection.encryptionKey = defaultEncryptionKey
+            MainActivity.Protection.offlineEncryptionKey = defaultEncryptionKey
         } else {
             reencryptDocuments(
                     File(getSaveLocation(this)),
-                    MainActivity.Protection.encryptionKey,
+                    MainActivity.Protection.offlineEncryptionKey,
                     ""
             )
 
-            MainActivity.Protection.encryptionKey = defaultEncryptionKey
+            MainActivity.Protection.offlineEncryptionKey = defaultEncryptionKey
         }
     }
 
@@ -126,8 +126,8 @@ class SettingsActivity : AppCompatActivity() {
             val hashedPassword = PBKDF2Algo.generateHash(specifiedPassword, MainActivity.Protection.salt.toByteArray())
 
 
-            if (hashedPassword != MainActivity.Protection.encryptionKey) {
-                MainActivity.Protection.encryptionKey = hashedPassword
+            if (hashedPassword != MainActivity.Protection.offlineEncryptionKey) {
+                MainActivity.Protection.offlineEncryptionKey = hashedPassword
                 reencryptDocuments(File(getSaveLocation(this)),
                                    pref.getString("password_hash", null),
                                    hashedPassword)
@@ -140,7 +140,7 @@ class SettingsActivity : AppCompatActivity() {
                     pref.getString("password_hash", null),
                     defaultEncryptionKey)
 
-            MainActivity.Protection.encryptionKey = defaultEncryptionKey
+            MainActivity.Protection.offlineEncryptionKey = defaultEncryptionKey
             pref.edit().putString("password_hash", defaultEncryptionKey).apply()
 
         }
