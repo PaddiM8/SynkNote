@@ -93,14 +93,14 @@ class Adapter(private val fileList: ArrayList<File>, private val mainActivity: M
                         R.id.delete_button -> {
                             if (file.isFile) {
                                 mainActivity.refresh()
-                                Document(fileId).delete()
+                                Document(fileId).delete(file.canonicalPath, mainActivity)
                             } else {
                                 Folder(fileId).delete()
                             }
                         }
                         R.id.pin_button -> {
                             if (file.isFile) {
-                                Document(fileId).rename(newPinName, itemView, mainActivity)
+                                Document(fileId).rename(mainActivity, newPinName, itemView)
                             } else {
                                 Folder(fileId).rename(newPinName, mainActivity)
                             }

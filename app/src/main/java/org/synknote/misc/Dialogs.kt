@@ -63,13 +63,13 @@ fun showRenameDialog(documentId: Int, view: View, mainActivity: MainActivity) {
             documentExists(input)   -> Toast.makeText(view.context, "File already exists!", Toast.LENGTH_LONG).show()
             input.isEmpty()         -> Toast.makeText(view.context, "File name is too short!", Toast.LENGTH_LONG).show()
             !isValidFileName(input) -> Toast.makeText(view.context, "File name contains bad characters!", Toast.LENGTH_LONG).show()
-            else -> Document(documentId).rename(input, view, mainActivity)
+            else -> Document(documentId).rename(mainActivity, input, view)
         }
 
         /*val file = File(MainActivity.FileList.currentDirectory + "/" + input + "." + fileExtension)
         MainActivity.FileList.files[documentId] = file.renameTo
         MainActivity.FileList.adapter.notifyDataSetChanged()*/
-        Document(documentId).rename("$input.$fileExtension", view, mainActivity)
+        Document(documentId).rename(mainActivity, "$input.$fileExtension", view)
         renameDialog.dismiss()
     }
 

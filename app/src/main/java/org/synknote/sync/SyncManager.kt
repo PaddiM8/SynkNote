@@ -47,6 +47,7 @@ class SyncManager(context: Context) {
                 Toast.makeText(_context, errorCode.name, Toast.LENGTH_SHORT).show()
                 mutableMapOf(Pair("error", errorCode))
             } else {
+                Log.d("RESPONSEBODY!!!", responseBody)
                 getResult(type, responseBody)
             }
         } catch (e: IOException) {
@@ -93,7 +94,7 @@ class SyncManager(context: Context) {
 
     fun register(email: String, password: String): Map<*, *> {
         val formBody = FormBody.Builder()
-                .add("email",    email)
+                .add("email",       email)
                 .add("password", password)
                 .build()
         val request = Request.Builder()
@@ -106,7 +107,7 @@ class SyncManager(context: Context) {
 
     fun login(email: String, password: String): Map<*, *> {
         val formBody = FormBody.Builder()
-                .add("email",    email)
+                .add("email",       email)
                 .add("password", password)
                 .build()
         val request = Request.Builder()
@@ -120,8 +121,8 @@ class SyncManager(context: Context) {
     fun createNotebook(userId: String, token: String, name: String): Map<*, *> {
         val formBody = FormBody.Builder()
                 .add("userId", userId)
-                .add("token",  token)
-                .add("name",   name)
+                .add("token",   token)
+                .add("name",     name)
                 .build()
         val request = Request.Builder()
                 .url(getUrl("api/notebook"))
@@ -134,7 +135,7 @@ class SyncManager(context: Context) {
     fun getAllNotebooks(userId: String, token: String): Map<*, *> {
         val httpUrl = HttpUrl.parse(getUrl("api/notebook").toString())!!.newBuilder()
                 .addQueryParameter("userId", userId)
-                .addQueryParameter("token", token)
+                .addQueryParameter("token",   token)
                 .build()
         val request = Request.Builder()
                 .url(httpUrl)
@@ -145,9 +146,9 @@ class SyncManager(context: Context) {
 
     fun createNote(userId: String, token: String, location: String, notebookId: String): Map<*, *> {
         val formBody = FormBody.Builder()
-                .add("userId",     userId)
-                .add("token",      token)
-                .add("location",   location)
+                .add("userId",         userId)
+                .add("token",           token)
+                .add("location",     location)
                 .add("notebookId", notebookId)
                 .build()
         val request = Request.Builder()
@@ -161,7 +162,7 @@ class SyncManager(context: Context) {
     fun deleteNote(userId: String, token: String, noteId: String): Map<*, *> {
         val formBody = FormBody.Builder()
                 .add("userId",     userId)
-                .add("token",      token)
+                .add("token",       token)
                 .build()
         val request = Request.Builder()
                 .url(getUrl("api/note/$noteId"))
@@ -171,10 +172,24 @@ class SyncManager(context: Context) {
         return makeRequest(request) as Map<*, *>
     }
 
+    fun moveNote(userId: String, token: String, noteId: String, location: String): Map<*, *> {
+        val formBody = FormBody.Builder()
+                .add("userId",     userId)
+                .add("token",       token)
+                .add("location", location)
+                .build()
+        val request = Request.Builder()
+                .url(getUrl("api/note/$noteId/move"))
+                .post(formBody)
+                .build()
+
+        return makeRequest(request) as Map<*, *>
+    }
+
     fun getNote(userId: String, token: String, noteId: String): Map<*, *> {
         val httpUrl = HttpUrl.parse(getUrl("api/note/$noteId").toString())!!.newBuilder()
                 .addQueryParameter("userId", userId)
-                .addQueryParameter("token", token)
+                .addQueryParameter("token",   token)
                 .build()
         val request = Request.Builder()
                 .url(httpUrl)
@@ -186,7 +201,7 @@ class SyncManager(context: Context) {
     fun getAllNotebookNotes(userId: String, token: String, notebookId: String): NoteReturn {
         val httpUrl = HttpUrl.parse(getUrl("api/notebook/$notebookId").toString())!!.newBuilder()
                 .addQueryParameter("userId", userId)
-                .addQueryParameter("token", token)
+                .addQueryParameter("token",   token)
                 .build()
         val request = Request.Builder()
                 .url(httpUrl)
@@ -212,7 +227,7 @@ class SyncManager(context: Context) {
     fun getActions(userId: String, token: String, actionId: Int): ActionsReturn {
         val httpUrl = HttpUrl.parse(getUrl("api/user/$userId/actions").toString())!!.newBuilder()
                 .addQueryParameter("userId", userId)
-                .addQueryParameter("token", token)
+                .addQueryParameter("token",   token)
                 .addQueryParameter("afterId",   actionId.toString())
                 .build()
         val request = Request.Builder()

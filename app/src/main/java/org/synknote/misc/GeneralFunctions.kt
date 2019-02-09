@@ -21,6 +21,7 @@ import java.io.File
 import android.app.AlarmManager
 import android.content.Intent
 import android.app.PendingIntent
+import android.util.Log
 import org.synknote.models.NoteData
 
 
@@ -92,8 +93,7 @@ fun getCurrentLinePosition(editText: EditText): Array<Int> {
 }
 
 fun getSaveLocation(context: Context): String {
-    return PrefManager(context, PrefGroup.Notebooks)
-            .getString(MainActivity.FileList.currentNotebook.name)
+    return fixUrl(MainActivity.FileList.currentNotebook.location)
 }
 
 
@@ -112,6 +112,7 @@ fun partitionNoteData(content: String): NoteData {
     val dataString = content.substring(content.length - 53)
     val salt = dataString.substring(0, 29)
     val id = dataString.substring(29)
+    Log.d("ID1", id)
 
     return NoteData(id, salt, body)
 }

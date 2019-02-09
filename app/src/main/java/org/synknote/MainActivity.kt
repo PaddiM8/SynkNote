@@ -392,14 +392,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val result = SyncManager(this).getActions(
                 syncPref.getString("userId"),
                 syncPref.getString("token"),
-                syncPref.getString("actionId").toInt()
+                syncPref.getString("actionId").toDouble().toInt()
         )
 
         if (result.actions.count() > 0) {
             for (action in result.actions) {
-                when (action.actionType) {
+                when (action.action) {
                     NoteActionTypes.CREATE.ordinal ->
                         Document().add(this, action.value, action.subject)
+                    NoteActionTypes.DELETE.ordinal ->
+                        Document().delete(this, action.value, false)
+                    NoteActionTypes.MOVE.ordinal ->
+                        Document().move(this, action.value, action.value2)
                 }
             }
 

@@ -151,12 +151,16 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
         file.writeText(StringUtils.repeat("-", 29) + id)
     }
 
-    fun delete(context: Context) {
+    fun delete(mainActivity: MainActivity = MainActivity(), location: String = "",
+               sync: Boolean = MainActivity.FileList.currentNotebook.sync) {
+        var documentFile = MainActivity.FileList.files[_documentId]
+        if (location != "") documentFile = File(fixUrl(
+                mainActivity.filesDir.canonicalPath) + location)
 
-        if (MainActivity.FileList.currentNotebook.sync) {
-            val syncPref = PrefManager(context, PrefGroup.Sync)
-            val noteId = "" // TODO
-            val result = SyncManager(context).deleteNote(
+        if (sync) {
+            val syncPref = PrefManager(mainActivity, PrefGroup.Sync)
+            val noteId = partitionNoteData(documentFile.readText()).id
+            val result = SyncManager(mainActivity).deleteNote(
                     syncPref.getString("userId"),
                     syncPref.getString("token"),
                     noteId
@@ -165,21 +169,49 @@ class Document(documentId: Int = 0, documentFile: File = File("")) {
             syncPref.setString("actionId", result["actionId"].toString())
         }
 
-        delete()
+        delete(documentFile.canonicalPath, mainActivity)
     }
 
-    fun delete() {
-        val documentFile = MainActivity.FileList.files[_documentId]
-        documentFile.delete()
-        MainActivity.FileList.adapter.removeItem(_documentId)
+    fun delete(location: String = "", mainActivity: MainActivity = MainActivity()) {
+        if (location != "") {
+            File(location).delete()
+            mainActivity.loadDocuments()
+        } else {
+            MainActivity.FileList.files[_documentId].delete()
+            MainActivity.FileList.adapter.removeItem(_documentId)
+        }
     }
 
-    fun rename(newName: String, view: View, mainActivity: MainActivity) {
+    fun rename(mainActivity: MainActivity, newName: String, view: View,
+               sync: Boolean = MainActivity.FileList.currentNotebook.sync) {
         val documentFile = MainActivity.FileList.files[_documentId]
-        val newFile = File(getSaveLocation(view.context) + newName + "" + documentFile.extension)
+        val newFile = File(getSaveLocation(view.context) + newName)
         documentFile.renameTo(newFile)
+
+        if (sync) {
+            val syncPref = PrefManager(mainActivity, PrefGroup.Sync)
+            val noteId = partitionNoteData(newFile.readText()).id
+            Log.d("NoteId", noteId)
+            val result = SyncManager(mainActivity).moveNote(
+                    syncPref.getString("userId"),
+                    syncPref.getString("token"),
+                    noteId,
+                    newFile.canonicalPath.substring(view.context.filesDir.canonicalPath.length)
+            )
+
+            syncPref.setString("actionId", result["actionId"].toString())
+        }
+
         //MainActivity.FileList.files[_documentId] = newFile
         //MainActivity.FileList.adapter.notifyItemChanged(_documentId)
+        mainActivity.loadDocuments()
+    }
+
+    fun move(mainActivity: MainActivity, oldLocation: String, newLocation: String) {
+        val file = File(fixUrl(mainActivity.filesDir.canonicalPath) + oldLocation)
+        val newFile = File(fixUrl(mainActivity.filesDir.canonicalPath) + newLocation)
+        file.copyTo(newFile)
+        file.delete()
         mainActivity.loadDocuments()
     }
 }
